@@ -26,7 +26,7 @@ export const blogConfig = {
     description:
       "A personal digital garden — notes, essays, and explorations about web development, tools, and systems.",
     /** 生产环境域名（含 https://），部署时通过环境变量覆盖 */
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://digitalgarden.vercel.app",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://istarry.top",
     /** <html lang> 属性，影响浏览器翻译和屏幕阅读器 */
     language: "zh-CN",
     /** 日期格式化 locale，用于 toLocaleDateString */
@@ -37,11 +37,11 @@ export const blogConfig = {
   // 作者信息 — 名称、简介、头像
   // ===================================================================
   author: {
-    name: "Digital Garden",
+    name: "Istarry",
     /** 短简介，用于 SEO 结构化数据 */
     bio: "A developer who writes about web, tools, and systems. Building things and sharing what I learn along the way.",
     /** 头像路径，放在 public/images/ 下 */
-    avatar: "/images/avatar.png",
+    avatar: "img.istarry.top/images/head.jpg",
   },
 
   // ===================================================================
