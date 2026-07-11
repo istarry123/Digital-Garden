@@ -51,7 +51,7 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <main>
-      {/* Cover image — full-width hero above the title */}
+      {/* Cover image — contained hero, sits entirely above the content grid */}
       {post.cover ? (
         <div className="mx-auto max-w-5xl px-6 pt-8">
           <div className="relative overflow-hidden rounded-xl bg-neutral-100 shadow-lg dark:bg-neutral-800">
@@ -69,14 +69,11 @@ export default async function PostPage({ params }: Props) {
         <div className="pt-8" />
       )}
 
-      {/* Three-column grid layout */}
-      <div className="mx-auto max-w-[1440px] px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-10">
-          {/* Left 1/3: empty whitespace for visual balance */}
-          <div className="hidden lg:block" />
-
-          {/* Center 1/3: article content, strictly contained */}
-          <article className="min-w-0">
+      {/* Content area: article (centered, 800px) + TOC (240px sidebar) */}
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] lg:gap-x-10">
+          {/* Article body — centered within its column, comfortable reading width */}
+          <article className="mx-auto w-full max-w-[800px] min-w-0">
             <header className="mb-10">
               <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-100">
                 {post.title}
@@ -121,12 +118,9 @@ export default async function PostPage({ params }: Props) {
             )}
           </article>
 
-          {/* Right 1/3: TOC sidebar */}
+          {/* TOC sidebar — stays within its column, starts below the cover */}
           <aside className="hidden lg:block">
-            <div
-              className="sticky top-[50vh]"
-              style={{ transform: "translateY(-50%)" }}
-            >
+            <div className="sticky top-24">
               <TableOfContents items={post.toc} />
             </div>
           </aside>
