@@ -4,7 +4,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { blogConfig } from "@/config/blog.config";
 import "./globals.css";
 
-const { site, social } = blogConfig;
+const { site, social, branding } = blogConfig;
 
 export const metadata: Metadata = {
   title: {
@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   },
   description: site.description,
   metadataBase: new URL(site.url),
+  icons: {
+    icon: branding.favicon,
+  },
   openGraph: {
     type: "website",
     siteName: site.name,
