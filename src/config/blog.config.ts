@@ -19,9 +19,9 @@ export const blogConfig = {
   // ===================================================================
   site: {
     /** 浏览器标签页默认标题，也用于 RSS / OG */
-    name: "Digital Garden",
+    name: "Istarry",
     /** 首页 title */
-    title: "Digital Garden",
+    title: "Istarry",
     /** 全局 meta description，搜索引擎和社交分享使用 */
     description:
       "A personal digital garden — notes, essays, and explorations about web development, tools, and systems.",
@@ -61,14 +61,14 @@ export const blogConfig = {
   // ===================================================================
   hero: {
     /** Hero 区顶部小标签 */
-    tagline: "Welcome to my corner of the internet",
+    tagline: "Welcome to My Digital Garden 🌱",
     /** 主标题第一行 */
-    greeting: "Hi, I&apos;m a developer",
+    greeting: "Hi, I'm a developer",
     /** 主标题高亮文字（支持 HTML 实体如 &amp;） */
-    highlight: "web, tools &amp; systems",
+    highlight: "building reliable & secure systems",
     /** 个人描述段落 */
     description:
-      "This is my digital garden — a space where I share notes, essays, and things I learn along the way. No pressure to be perfect, just a place to think in public.",
+      "记录我的技术探索与工程实践，涵盖 Linux、网络架构、信息安全、服务器运维以及企业 IT 系统建设。这里不仅是博客，也是一个持续成长的知识库。",
     /** Hero 区按钮 */
     buttons: {
       github: {
@@ -97,21 +97,21 @@ export const blogConfig = {
   // ===================================================================
   social: {
     /** GitHub 主页 URL（Hero 按钮使用） */
-    github: "https://github.com",
+    github: "https://github.com/istarry123",
     /** Twitter handle（layout metadata 使用） */
-    twitter: "@digitalgarden",
+    twitter: "@Istarry123",
   },
 
   /** Navbar 社交下拉菜单 — 增删改只需编辑此数组 */
   socialLinks: [
     {
       name: "GitHub",
-      url: "https://github.com",
+      url: "https://github.com/istarry123",
       icon: "github" as const,
     },
     {
       name: "Twitter",
-      url: "https://twitter.com",
+      url: "https://twitter.com/Istarry123",
       icon: "twitter" as const,
     },
     {
@@ -297,7 +297,7 @@ export const blogConfig = {
   // ===================================================================
   footer: {
     /** 版权起始年份 */
-    copyrightSince: 2024,
+    copyrightSince: 2026,
     /** 版权署名 */
     copyrightName: "Digital Garden",
   },

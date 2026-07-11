@@ -1,15 +1,35 @@
 ---
-date: "2026-07-01"
-mood: happy
+date: "2026-07-10"
+mood: excited
 tags:
-  - Meta
+  - Digital Garden
   - Next.js
+  - Open Source
+  - Knowledge Management
 ---
 
-Digital garden is officially live.
+我的数字花园终于建成了。🌱
 
-It's not a blog — it's a collection of evolving notes, half-formed ideas, and things I'm learning. Some pages will grow over time, others might stay as seedlings.
+经过多年的技术探索与实践，我终于搭建了属于自己的知识沉淀空间。
 
-Built with Next.js 15, deployed on Vercel, themed with Tailwind CSS v4.
+从最初的 Linux 学习、服务器部署，到网络架构、安全建设、企业 IT 运维，再到 Web 开发与开源项目探索，过去积累的每一次实践、每一篇笔记、每一个项目，都逐渐连接成了一张不断生长的知识网络。
 
-Let's see where this goes.
+这个数字花园基于 Next.js 构建，结合 Markdown 内容管理、知识图谱、时间轴以及探索空间，将零散的技术记录整理成一个持续演进的个人知识库。
+
+这里记录的不只是最终成果，更是技术成长过程中的每一步：
+
+- Linux 服务器实践
+- 网络架构设计
+- 信息安全探索
+- 开源工具研究
+- 软件开发实践
+- 企业 IT 系统建设经验
+
+接下来：
+
+- 持续完善知识图谱
+- 补充更多技术文章
+- 记录更多真实项目实践
+- 让这个花园继续生长
+
+欢迎来到我的 Digital Garden。🌱
