@@ -80,7 +80,7 @@ export const blogConfig = {
     /** 主标题第一行 */
     greeting: "Hi, I'm the developer Also an IStarry. ",
     /** 主标题高亮文字（支持 HTML 实体如 &amp;） */
-    highlight: "web, tools, and systems. Building things and sharing what I learn along the way",
+    highlight: "Systems, Security & Engineering Practice",
     /** 个人描述段落 */
     description:
       "记录我的技术探索与工程实践，涵盖 Linux、网络架构、信息安全、服务器运维以及企业 IT 系统建设。这里不仅是博客，也是一个持续成长的知识库.",
