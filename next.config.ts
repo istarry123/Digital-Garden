@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      // Image CDN (when NEXT_PUBLIC_IMAGE_CDN is set)
+      // Uncomment and replace with your CDN domain:
+      // {
+      //   protocol: "https",
+      //   hostname: "cdn.example.com",
+      // },
     ],
   },
 };

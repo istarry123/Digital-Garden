@@ -19,9 +19,9 @@ export const blogConfig = {
   // ===================================================================
   site: {
     /** 浏览器标签页默认标题，也用于 RSS / OG */
-    name: "Istarry",
+    name: "IStarry's Digital Garden",
     /** 首页 title */
-    title: "Istarry",
+    title: "IStarry",
     /** 全局 meta description，搜索引擎和社交分享使用 */
     description:
       "A personal digital garden — notes, essays, and explorations about web development, tools, and systems.",
@@ -37,23 +37,38 @@ export const blogConfig = {
   // 作者信息 — 名称、简介、头像
   // ===================================================================
   author: {
-    name: "Istarry",
+    name: "IStarry",
     /** 短简介，用于 SEO 结构化数据 */
     bio: "A developer who writes about web, tools, and systems. Building things and sharing what I learn along the way.",
-    /** 头像路径，放在 public/images/ 下 */
+    /** 头像路径，放在 public/assets/images/ 下 */
     avatar: "img.istarry.top/images/head.jpg",
   },
 
   // ===================================================================
-  // 品牌 — Favicon、Logo
+  // 品牌 — Favicon、Logo、资源路径
   // ===================================================================
   branding: {
     /** 浏览器标签页图标，放在 public/ 下 */
-    favicon: "img.istarry.top/images/favicon.ico",
-    /** 站点 Logo，放在 public/images/ 下 */
-    logo: "/images/logo.png",
+    favicon: "/img.istarry.top/images/favicon.ico",
+    /** 站点 Logo，放在 public/assets/images/ 下 */
+    logo: "img.istarry.top/images/favicon.ico",
     /** 默认 OG 分享图（当文章没有 cover 时使用） */
-    ogImage: "/images/og-default.png",
+    ogImage: "/assets/images/og-default.png",
+  },
+
+  // ===================================================================
+  // 图片资源 — 双轨兼容：本地路径 + 网络图床
+  // ===================================================================
+  assets: {
+    /** 本地图片存放目录（相对于 public/），Markdown 中通过 /assets/images/... 引用 */
+    localPath: "/assets/images",
+    /**
+     * 网络图床 CDN 前缀（可选）。
+     * 设置后，Markdown 中的图片优先使用 CDN URL。
+     * 例如：NEXT_PUBLIC_IMAGE_CDN=https://cdn.example.com
+     * 引用方式：/assets/images/photo.png → https://cdn.example.com/assets/images/photo.png
+     */
+    cdnUrl: process.env.NEXT_PUBLIC_IMAGE_CDN ?? "",
   },
 
   // ===================================================================
@@ -63,12 +78,12 @@ export const blogConfig = {
     /** Hero 区顶部小标签 */
     tagline: "Welcome to My Digital Garden 🌱",
     /** 主标题第一行 */
-    greeting: "Hi, I'm a developer",
+    greeting: "Hi, I'm the developer ",
     /** 主标题高亮文字（支持 HTML 实体如 &amp;） */
-    highlight: "building reliable & secure systems",
+    highlight: "Also an IStarry.",
     /** 个人描述段落 */
     description:
-      "记录我的技术探索与工程实践，涵盖 Linux、网络架构、信息安全、服务器运维以及企业 IT 系统建设。这里不仅是博客，也是一个持续成长的知识库。",
+      "记录我的技术探索与工程实践，涵盖 Linux、网络架构、信息安全、服务器运维以及企业 IT 系统建设。这里不仅是博客，也是一个持续成长的知识库.",
     /** Hero 区按钮 */
     buttons: {
       github: {
@@ -299,7 +314,7 @@ export const blogConfig = {
     /** 版权起始年份 */
     copyrightSince: 2026,
     /** 版权署名 */
-    copyrightName: "Digital Garden",
+    copyrightName: "istarry",
   },
 } as const;
 
