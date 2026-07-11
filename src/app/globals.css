@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Custom theme variables go here */
+}
+
+/* ---- Code block: dual-theme toggle ---- */
+pre > code[data-theme="dark"] {
+  display: none;
+}
+
+.dark pre > code[data-theme="dark"] {
+  display: block;
+}
+
+.dark pre > code[data-theme="light"] {
+  display: none;
+}
+
+/* ---- Code block: rehype-pretty-code figure ---- */
+[data-rehype-pretty-code-figure] {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+[data-rehype-pretty-code-figure] code {
+  display: block;
+  counter-reset: line;
+  font-variant-ligatures: none;
+}
+
+/* ---- Inline code (inside code blocks) ---- */
+[data-rehype-pretty-code-figure] code > [data-line] {
+  padding: 0 0.25rem;
+}
+
+/* ---- Code block: line numbers ---- */
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1.5rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: #636d83;
+}
+
+/* ---- Code block: highlighted lines ---- */
+[data-highlighted-line] {
+  background: rgb(101 117 133 / 0.16);
+  border-left: 3px solid #0969da;
+  margin: 0 -1.25rem;
+  padding-left: calc(1.25rem - 3px) !important;
+}
+
+.dark [data-highlighted-line] {
+  background: rgb(101 117 133 / 0.24);
+  border-left-color: #58a6ff;
+}
+
+/* ---- Code block: title bar ---- */
+[data-rehype-pretty-code-title] {
+  padding: 0.5rem 1.25rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: #636d83;
+  background: #f6f8fa;
+  border-bottom: 1px solid #d0d7de;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.dark [data-rehype-pretty-code-title] {
+  background: #161b22;
+  border-bottom-color: #30363d;
+  color: #8b949e;
+}
+
+/* ---- Code block: language label ---- */
+[data-rehype-pretty-code-caption] {
+  margin-bottom: -1.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  color: #636d83;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Content images (Markdown ![]() rendered by rehype plugin) ---- */
+.content-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+  margin: 1.5rem 0;
+  display: block;
+}
+
+.dark .content-image {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+}
