@@ -49,7 +49,7 @@ export const blogConfig = {
   // ===================================================================
   branding: {
     /** 浏览器标签页图标，放在 public/ 下 */
-    favicon: "/favicon.ico",
+    favicon: "img.istarry.top/images/favicon.ico",
     /** 站点 Logo，放在 public/images/ 下 */
     logo: "/images/logo.png",
     /** 默认 OG 分享图（当文章没有 cover 时使用） */
