@@ -1,0 +1,419 @@
+---
+title: "centos文件权限管理"
+date: "2025-07-16"
+description: "本文深入讲解 CentOS 系统的文件权限管理，涵盖 UGO 权限模型、rwx 权限对文件与目录的不同作用、权限的数字与符号设置方法，并通过案例演示权限隔离与测试；同时介绍 ACL实现更精细的用户/组权限分配."
+tags:
+  - cloud computing
+  - Linux
+cover: "https://picsum.photos/seed/digital-garden/1200/630"
+---
+
+# 一、Linux用户权限解析
+
+## 1. UGO权限概括
+1.什么是 **UGO**
+| 缩写      | 含义 | 中文    |
+| :---: |    :----:   |  :---: |
+| U      | User       | 所有者()   |
+| G   | Group        | 所属组()      |	
+| O      |  Others  |   其他人   |
+> 每个文件/目录都对应这三类人，对应三组权限：**r(读)，w(写),x(执行)**
+
+2.权限符号说明
+| 符号 | 含义    | 对文件的作用          | 对目录的作用           |
+|------|---------|-----------------------|------------------------|
+| r    | read    | 查看文件内容          | 列出目录内容(`ls`)     |
+| w    | write   | 修改或删除文件        | 创建、删除、重命名文件 |
+| x    | execute | 执行文件(如脚本/程序) | 进入目录(`cd`)         |
+
+## 2. 权限对象
+- 属主：u
+- 属组：g
+- 其他人：o
+- 所有人：a(u + g + o)
+
+## 3. 权限类型
+- 读:r=4
+- 写:w=2
+- 执行:x=1
+
+## 4. 文件的所有者、所属组
+查看权限记录
+```
+[root@192 ~]# ls -l /root/1.txt 
+-rw-r--r--. 1 root root 0 7月  16 20:01 /root/1.txt
+[root@192 ~]# 
+```
+> -文件类型
+>  rw-主人的权限，属主
+> r--属组的权限，
+>  r--其他人的权限
+> .权限的扩展
+>    1文件链接（第七章文件链接）
+>        root文件的属主
+>             root文件的属组 
+>    		    	 179大小
+>  5月  25  14:27文件最后的修改时间
+> /root/1.txt    文件的名和路径
+
+## 5. 设置权限
+
+### 5.1 更改权限
+
+#### 5.1.1 使用符号
+1.语法
+使用符号：u用户 g组  o其他  r读   w写  x执行    
+语法： chmod   对象(u/g/o/a)赋值符(+/-/=)权限类型(r/w/x)    文件/目录
+
+2.了解普通文件的基本权限
+```
+[root@192 ~]# cd /tmp/
+[root@192 tmp]# touch file1
+[root@192 tmp]# ll file1 
+-rw-r--r--. 1 root root 0 7月  17 08:11 file1
+[root@192 tmp]#
+```
+权限         属主  属组         文件
+
+3.编写程序
+```
+[root@192 tmp]#vim    file1 
+echo    "hello 2025"
+read    -p     "请输入您的姓名："     name
+echo     "哈哈 $name 是大笨蛋"
+```
+
+4.增加执行权限
+```
+[root@192 tmp]# chmod u+x file1 
+[root@192 tmp]# ll file1 
+-rwxr--r--. 1 root root 0 7月  17 08:11 file1
+[root@192 tmp]#
+```
+> 属主增加执行
+
+5.运行测试。成功
+```
+[root@192 tmp]# ./file1 
+hello 2025
+请输入您的姓名：123
+哈哈 123 是大笨蛋
+[root@192 tmp]#
+```
+
+6.去除权限。运行失败
+```
+[root@192 tmp]# chmod u-x file1 
+[root@192 tmp]# ./file1
+-bash: ./file1: 权限不够
+[root@192 tmp]# 
+```
+
+7.更多的修改权限练习
+```
+[root@192 tmp]# chmod        a=rwx    file1 //所有人等于读写执行
+[root@192 tmp]# chmod        a=-       file1 //所有人没有权限
+[root@192 tmp]# chmod       ug=rw,o=r       file1 //属主属组等于读写，其他人只读
+[root@192 tmp]# ll file1 //以长模式方式查看文件权限
+-rw-rw-r-- 1 alice it 17 10-25 16:45 file1 //显示的结果
+```
+
+#### 5.1.2 使用数字
+4读 2写 1执行
+```
+[root@192 tmp]# chmod 644 file1
+[root@192 tmp]# ll file1
+-rw-r--r--. 1 root root 109 7月  17 08:16 file1
+[root@192 tmp]# 
+```
+
+### 5.2 更改属主、属组
+
+#### 5.2.1 chown命令
+chown： 设置一个文件属于谁，属主   
+语法： chown   用户名.组名   文件
+
+```
+[root@192 tmp]# chown user02.ir file1
+```
+>  //改属主、属组
+
+```
+[root@192 tmp]# chown user02 file1
+```
+> //只改属主
+
+```
+[root@192 tmp]# chown .ir file1
+```
+>  //只改属组
+
+选项：`-R` 针对目录中所以文件
+
+#### 5.2.2 chgrp命令
+chgrp： 设置一个文件属于哪个组，属组   
+语法：            chgrp   组名   文件      -R是递归的意思
+```
+[root@192 ~]# chgrp it file1 //改文件属组
+[root@192 ~]# chgrp -R it dir1 //改文件属组
+```
+
+## 6. 案例
+
+### 6.1 用户权限的意义
+设定用户账户对文件（图片，视频，程序）的访问能力（看一看，写一写，执行）。
+
+### 6.2 权限的对象
+属主：文件的主人：u   
+属组：文件属于组员权限：g   
+其他人：除了主人和组员之外的用户：other   
+特殊对象：所有人（包含主人，组员，其他）：all 全部
+
+### 6.3 权限的类型
+读取：r=4   
+写入：w=2   
+执行：x=1
+
+### 6.4 修改文件的权限（完成授权一种方法）
+命令：chmod（ch改变mod设置）   
+语法：chmod 授权 文件   
+示例：`chmod u+x file1.txt`   
+示例：`chmod 764 file1.txt`  (属主读写执行，属组读写，其他人读)   
+案例：给一个文件增加执行权，用于执行。   
+
+### 6.5 修改文件的属主和属组（完成授权另一种方法）
+命令：chown（ch改变own所有者）   
+语法：chown  属主.属组  文件/文件夹   
+语法：chown  属主 文件   
+语法：chown  .属组 文件   
+示例：`chown  user01.hr   file1.txt`   
+示例：`chown -R user01.hr  dir1/`
+
+### 6.6 案例需求
+文件`file10.txt`   
+属主是user100，读写执行-7（可以看内容，可以改内容，可以执行）   
+属组是jishuzu（user200），读取    -4（只能看，不能改，不能执行）   
+其他人         没有权限-0（既不能看，又不能改和执行）
+
+### 6.7 操作
+#### 6.7.1 使用root账户，来到`/tmp`目录
+```
+[root@192 tmp]# cd /tmp
+[root@192 tmp]# pwd
+/tmp
+[root@192 tmp]# 
+```
+
+#### 6.7.2 创建文件`file10.txt`
+```
+[root@192 tmp]# touch file10.txt
+[root@192 tmp]# ll file10.txt
+-rw-r--r--. 1 root root 0 7月  17 09:02 file10.txt
+[root@192 tmp]# 
+```
+> 主人:读写 组：读 其他人：读
+
+#### 6.7.3 准备测试账号
+```
+[root@192 tmp]# useradd user100
+[root@192 tmp]# useradd user200
+[root@192 tmp]# useradd user300
+[root@192 tmp]# groupadd jishuzu
+[root@192 tmp]# usermod -aG jishuzu   user200
+[root@192 tmp]# id user200
+uid=2103(user200) gid=2105(user200) 组=2105(user200),2107(jishuzu)
+[root@192 tmp]# 
+```
+
+#### 6.7.4 授予文件属主和属组，以及其他人的权限。
+```
+[root@192 tmp]# chmod 740 file10.txt 
+[root@192 tmp]# ll file10.txt 
+-rwxr-----. 1 root root 0 7月  17 09:02 file10.txt
+[root@192 tmp]# 
+```
+>  主人：读写执行      组：读     其他人：没有权限
+
+#### 6.7.5 修改文件属主和属组。chown
+```
+[root@192 tmp]# chown user100.jishuzu  file10.txt
+[root@192 tmp]# ll file10.txt 
+-rwxr-----. 1 user100 jishuzu 0 7月  17 09:02 file10.txt
+[root@192 tmp]# 
+```
+> 属主：user100     属组：jishuzu（组员user200）
+
+#### 6.7.6 测试
+
+##### 6.7.6.1 使用user100，访问文件。写入文件，执行文件
+```
+[root@192 tmp]# su - user100
+上一次登录：四 7月 17 09:09:18 CST 2025pts/0 上
+[user100@192 ~]$ cd /tmp
+[user100@192 tmp]$ cat file10.txt 
+123
+456
+789
+Hello Linux
+[user100@192 tmp]$ vim file10.txt 
+[user100@192 tmp]$ ./file10.txt 
+123
+456
+789
+Hello Linux
+[user100@192 tmp]$ exit
+登出
+[root@192 tmp]# 
+```
+
+##### 6.7.6.2 使用jishuzu成员，访问文件，不可写和执行
+```
+[root@192 tmp]# su - user200
+[user200@192 ~]$ cd /tmp
+[user200@192 tmp]$ cat file10.txt 
+echo "123"
+echo "456"
+echo "789"
+echo "Hello Linux"
+[user200@192 tmp]$ vim file10.txt 
+-- 插入 -- W10: 警告: 正在修改一个只读文件
+E45: 已设定选项 'readonly' (请加 ! 强制执行)
+[user200@192 tmp]$ ./file10.txt
+-bash: ./file10.txt: 权限不够
+[user200@192 tmp]$ exit
+登出
+[root@192 tmp]:
+```
+
+##### 6.7.6.3 使用其他用户user300，访问文件失败。写入失败，执行失败。
+```
+[root@192 tmp]# su - user300
+[user300@192 ~]$ cd /tmp
+[user300@192 tmp]$ cat file10.txt 
+cat: file10.txt: 权限不够
+[user300@192 tmp]$ vim file10.txt 
+"file10.txt" [权限不足]  
+[user300@192 tmp]$ ./file10.txt
+-bash: ./file10.txt: 权限不够
+[user300@192 tmp]$ exit
+登出
+[root@192 tmp]#
+```
+
+# 二、基本权限ACL
+
+## 1. 区别
+ACL文件权限管理： 设置不同用户，不同的基本权限(r、w、x)。对象数量不同。   
+UGO设置基本权限： 只能一个用户，一个组和其他人
+
+## 2.语法
+```
+setfacl    -m      u:alice:rw                     /home/test.txt
+```
+命令       设置      用户或组:用户名:权限    文件对象
+
+## 3. 用法-设置
+
+### 3.1 准备文件
+```
+[root@192 ~]# touch /home/test.txt
+[root@192 ~]# ll /home/test.txt
+-rw-r--r--. 1 root root 0 7月  17 09:23 /home/test.txt
+[root@192 ~]# 
+```
+
+### 3.2 设置ACL
+> 查看文件有那些ACL权限
+```
+[root@192 ~]# getfacl /home/test.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/test.txt
+# owner: root
+# group: root
+user::rw-
+group::r--
+other::r--
+
+[root@192 ~]# 
+```
+
+> 设置用户alice,jack权限   前提：创建alice 和jack用户。
+```
+[root@192 ~]# useradd alice
+[root@192 ~]# useradd jack
+[root@192 ~]# setfacl -m u:alice:rw /home/test.txt
+[root@192 ~]# setfacl -m u:jack:- /home/test.txt
+[root@192 ~]
+```
+
+> `o`：其他用户（others）
+- setfacl：设置 ACL 权限
+
+- -m：修改（modify）现有 ACL 项
+
+- o::rw：
+
+    - o：表示 others（非 owner、非 group 的其他人）
+
+    - ::rw：设置 others 拥有 读（r）+ 写（w） 权限
+
+- /home/test.txt：目标文件
+```
+[root@localhost ~]# setfacl -m o::rw /home/test.txt
+```
+
+> 与`chmod`的区别
+不过 ACL 更强大，可精细控制指定用户或组的权限（`u:username`、`g:groupname`）而不仅限于 **U/G/O** 三类。
+
+### 3.3 查看/删除
+
+#### 3.3.1 查看ACL
+```
+[root@192 ~]# getfacl /home/test.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/test.txt
+# owner: root
+# group: root
+user::rw-
+user:alice:rw-
+user:jack:---
+group::r--
+mask::rw-
+other::r--
+
+[root@192 ~]# 
+```
+getfacl: Removing leading '/' from absolute path names   
+查看文件权限，删除了根路径。   
+ `file: home/test.txt`      文件名   
+ `owner: root`               属主：root   
+ `group: root`               属组：root   
+`user::rwx`                       用户：属主：rwx   
+`user:alice:rw-`		用户：alice：rw-   
+`user:jack:---`		用户：jack：---   
+`group::rwx`		组：属组：rwx   
+`mask::rwx`		掩码::rwx   
+`other::rwx`		other：其他人：rwx   
+
+#### 3.3.2 删除ACL
+
+##### 3.3.2.1 设置
+> 增加ir组对test.txt文件读取的权限
+```
+[root@192 ~]# setfacl -m g:ir:r /home/test.txt
+[root@192 ~]# 
+```
+
+##### 3.3.2.2 删除部分
+>  //删除组ir的acl权限
+```
+[root@192 ~]# setfacl -x g:ir /home/test.txt
+[root@192 ~]# 
+```
+
+##### 3.3.2.3 删除所有
+>  //删除所有acl权限
+```
+[root@192 ~]# setfacl -b /home/test.txt
+[root@192 ~]#
+```

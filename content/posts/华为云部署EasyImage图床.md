@@ -1,0 +1,235 @@
+---
+title: "华为云部署EasyImage图床"
+date: "2025-06-20"
+description: "本文全面介绍如何在华为云，部署EasyImage图床."
+tags:
+  - cloud computing
+  - Linux
+cover: "https://picsum.photos/seed/digital-garden/1200/630"
+---
+
+> 😀 最近正巧遇到云服务商618，货比三家，发现只有华为云符合新用户条件，所以买了华为云的Flexus应用服务器L实例，选择了宝塔镜像，本来是为了精简操作，快速部署，但是没想到里面陷阱满满，本篇将我遇到的问题汇总，同时分享EayImage图床安装教程
+
+## 一、安装
+
+### 1️⃣ 安装必要条件
+
+服务器：这里用的华为云Flexus应用服务器L实例   
+
+域名：任意   
+
+`PHP5.6`(最小)，推荐≥PHP7.0,作者这里使用PHP8.0,学院PHP支持Fileinfo,iconv,zip,mbstring,openssl扩展   
+
+安装好`Nginx1.22.1 `  
+
+安装必要扩展步骤：软件商店→已安装→PHP→设置→安装扩展→fileinfo；   
+
+安装完后，重启PHP.  
+
+![Linux Tools](https://img.istarry.top/i/2025/07/09/h1fxea.png)
+
+> 🌟  
+> 如果`fileinfo`没有安装上可能是内存过小，可以去软件商店下载 **Linux工具箱（Linux Tools）** ，将虚拟内存设置成2048MB,再去安装.当然此方法实施之后，也有可能导致失败，可以去问题汇总去查看解决方法。
+
+### 2️⃣ 域名解析到此服务器
+
+这次作者用的是DNSPOD  
+
+![DNSPod](https://img.istarry.top/i/2025/07/09/h1fwbr.png)
+
+> 注意：记录值需要填写服务器公网IP
+
+### 3️⃣ 添加一个站点
+
+#### 3.1
+
+点击网站→添加站点→只需将域名改为我们解析好的域名填入即可，最后提交;因为足够简单，所以不需要去设置mysql等
+
+![img](https://img.istarry.top/i/2025/07/09/h1fx08.png)
+
+#### 3.2 设置ssl证书
+
+在操作中点击 设置→SSL→let’s Encrypt,全选然后验证，验证通过会自动返还密钥(KEY) 证书(PEM格式)，然后回到当前证书页面保存，记住要给**强制HTTPS（强制SSL或者Force HTTPS）**打开
+
+> 🌟  
+> 当然也有可能验证失败，可以选择DNS验证，或者终端手动拉取SSL证书，详细会在问题汇总列出
+
+#### 3.3 打开网站根目录，将根目录下文件删除，点击远程下载→从URL链接下载
+
+github.com
+
+当然也可以将此网址输入浏览器上，再将解压包上传到根目录下
+
+解压，将解压后文件里的复制到根目录下，删除压缩包和空文件夹
+
+#### 3.4 打开网站目录（站点目录），取消防跨站攻击(open_basedir)
+
+![img](https://img.istarry.top/i/2025/07/09/h1fwo2.png)
+
+### 4️⃣ 打开我们绑定的网址，根据提示一步步安装
+
+## 二、问题汇总
+
+### 1️⃣ 问题1：宝塔面板LNMP安装问题解决方案
+
+解释：一开始登录云服务器部署的宝塔镜像，一进入极速安装LNMP，但是最后软件商店缺失了PHP-8.0  
+
+解决方案：通过宝塔面板右上角修复面板，解决此问题
+
+### 2️⃣ 问题2：手动部署fileinfo
+
+在我安装fileinfo的时候，更新了宝塔面板依然安装不上，报了以下错误
+
+🌟
+
+```
+mv: cannot stat '/www/server/php/80/src/ext-80': No such file or directory   
+cat: /etc/redhat-release: No such file or directory Configuring    
+for: PHP Api Version: 20200930 Zend Module Api    
+No: 20200930 Zend Extension Api No: 420200930 Cannot find autoconf.    
+Please check your autoconf installation and the $PHP_AUTOCONF environment variable.    
+Then, rerun this script.      
+   
+fileinfo.sh: line 96: ./configure: No such file or directory    
+sed: can't read Makefile: No such file or directory    
+make: *** No targets specified and no makefile found.     
+Stop. error
+```
+### 解决方案：
+
+#### 2.1 安装编译依赖
+
+```
+apt update   
+apt install -y autoconf build-essential pkg-config re2c libtool libzip-dev libxml2-dev
+```
+
+#### 2.2 确认PHP8.0的源码是否存在
+
+进入 PHP 8.0 源码目录（宝塔默认没有源码，需要手动下载）：
+
+`cd /www/server/php/80`
+
+如果你没有看到`src`文件夹，执行：
+
+```
+wget -O php-8.0.tar.gz <https://www.php.net/distributions/php-8.0.30.tar.gz>   
+tar -xzf php-8.0.tar.gz   
+mv php-8.0.30 src
+```
+
+#### 2.3编译安装fileinfo扩展
+
+```
+cd /www/server/php/80/src/ext/fileinfo  
+/www/server/php/80/bin/phpize  
+./configure --with-php-config=/www/server/php/80/bin/php-config  
+make && make install
+```
+
+如果看到：
+
+```
+Installing shared extensions:     /www/server/php/80/lib/php/extensions/no-debug-non-zts-xxxxxx/
+```
+
+安装成功
+
+#### 2.4 启用扩展
+
+编辑`php.ini`或使用宝塔添加扩展
+
+```
+echo "extension=fileinfo.so" >> /www/server/php/80/etc/php.ini
+```
+
+重启php
+
+#### 2.5 验证安装成功
+
+```
+/www/server/php/80/bin/php -m | grep fileinfo
+```
+
+输出：
+```
+fileinfo
+```
+
+说明安装成功，如果没有看到可以回到软件商店点开扩展，看fileinfo是否安装成功
+
+### 3️⃣ 手动部署SSL
+
+如果你想通过 终端命令 来申请 SSL 证书（如 Let’s Encrypt 免费证书），最常见且推荐的方式是使用 acme.sh，它支持大多数环境（包括宝塔面板、Nginx、Apache 等
+
+以下命令适用于 Ubuntu + 宝塔面板 + Nginx，不依赖宝塔面板的图形界面。
+
+#### 🔧 步骤一：安装 acme.sh
+```
+curl <https://get.acme.sh> | sh  
+source ~/.bashrc
+```
+查看是否安装成功：
+```
+acme.sh --version
+```
+#### 🌐 步骤二：用 webroot 模式申请证书
+
+你的网站根目录例如 `/www/wwwroot/example.com`，则执行：
+```
+acme.sh --issue -d example.com -w /www/wwwroot/example.com
+```
+如果你还有 www 子域名，也加上：
+```
+acme.sh --issue -d example.com -d www.example.com -w /www/wwwroot/example.com
+```
+> ✔️ 成功后会提示你证书生成成功。
+
+#### 📦 步骤三：安装证书到指定目录
+
+建议安装到宝塔的标准 SSL 存放目录：
+```
+mkdir -p /www/server/panel/vhost/cert/example.com/  
+
+acme.sh --install-cert -d example.com \\  
+--key-file       /www/server/panel/vhost/cert/example.com/privkey.pem \\  
+--fullchain-file /www/server/panel/vhost/cert/example.com/fullchain.pem  
+```
+安装后，`acme.sh` 会自动续期并更新这些文件。
+
+#### 🛠 步骤四：配置 Nginx 使用证书
+
+编辑：
+```
+nano /www/server/panel/vhost/nginx/example.com.conf
+```
+添加或替换：
+```
+listen 443 ssl http2;
+ssl_certificate     /www/server/panel/vhost/cert/example.com/fullchain.pem;
+ssl_certificate_key /www/server/panel/vhost/cert/example.com/privkey.pem;
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;
+```
+强制 HTTP 跳转到 HTTPS：
+```
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}
+```
+保存并测试配置：
+```
+nginx -t
+```
+重载 Nginx：
+```
+bt nginx reload
+```
+#### 🔁 自动续期（已默认启用）
+
+acme.sh 默认会安装 cron job，每 60 天自动续签一次。你也可以手动执行：
+```
+acme.sh --renew -d example.com --force
+```
