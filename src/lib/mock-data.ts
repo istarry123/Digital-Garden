@@ -9,6 +9,8 @@ export const mockPosts: Post[] = [
       "How I built this digital garden using Next.js 15 App Router, React Server Components, and Tailwind CSS v4.",
     tags: ["Next.js", "React", "TypeScript"],
     readingTime: 8,
+    category: [],
+    relations: { parent: null, related: [], children: [] },
   },
   {
     slug: "tailwind-v4-dark-mode",
@@ -18,6 +20,8 @@ export const mockPosts: Post[] = [
       "Tailwind v4 changed how dark mode works. Here's how to set up class-based dark mode with next-themes.",
     tags: ["Tailwind", "CSS", "Design"],
     readingTime: 5,
+    category: [],
+    relations: { parent: null, related: [], children: [] },
   },
   {
     slug: "react-19-server-components",
@@ -27,6 +31,8 @@ export const mockPosts: Post[] = [
       "Lessons learned from migrating a client-heavy app to React Server Components — what worked, what didn't, and when to use 'use client'.",
     tags: ["React", "JavaScript", "Performance"],
     readingTime: 12,
+    category: [],
+    relations: { parent: null, related: [], children: [] },
   },
   {
     slug: "typescript-patterns-2026",
@@ -36,6 +42,8 @@ export const mockPosts: Post[] = [
       "A collection of TypeScript patterns that make my code safer and more expressive — from template literal types to satisfies.",
     tags: ["TypeScript", "JavaScript"],
     readingTime: 10,
+    category: [],
+    relations: { parent: null, related: [], children: [] },
   },
   {
     slug: "vercel-deploy-guide",
@@ -45,6 +53,8 @@ export const mockPosts: Post[] = [
       "A complete guide to deploying a Next.js blog on Vercel — custom domains, ISR, analytics, and CI/CD with GitHub Actions.",
     tags: ["Next.js", "DevOps", "Vercel"],
     readingTime: 7,
+    category: [],
+    relations: { parent: null, related: [], children: [] },
   },
 ];
 

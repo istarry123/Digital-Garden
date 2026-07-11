@@ -5,6 +5,7 @@ description: "Welcome to my digital garden — a space for notes, essays, and ex
 tags:
   - Meta
   - Writing
+category: "Meta"
 ---
 
 ## Hello

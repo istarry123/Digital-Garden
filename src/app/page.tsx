@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/hero";
-import { LatestArticles } from "@/components/home/latest-articles";
-import { LatestExplore } from "@/components/home/latest-explore";
 import { blogConfig } from "@/config/blog.config";
 
 const { site } = blogConfig;
@@ -24,8 +22,6 @@ export default function HomePage() {
   return (
     <main>
       <Hero />
-      <LatestArticles />
-      <LatestExplore />
     </main>
   );
 }

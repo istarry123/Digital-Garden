@@ -6,6 +6,10 @@ tags:
   - Next.js
   - React
   - TypeScript
+category: "Web/Next.js"
+relations:
+  related:
+    - "tailwind-v4-dark-mode"
 cover: "https://picsum.photos/seed/digital-garden/1200/630"
 ---
 

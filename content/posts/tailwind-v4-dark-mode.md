@@ -6,6 +6,9 @@ tags:
   - Tailwind
   - CSS
   - Design
+category: "Web/CSS"
+relations:
+  parent: "building-digital-garden"
 ---
 
 ## What Changed in Tailwind v4

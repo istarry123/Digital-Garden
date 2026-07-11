@@ -11,7 +11,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeStringify from "rehype-stringify";
 import { rehypeImageOptimizer } from "@/lib/rehype-image-optimizer";
 import GithubSlugger from "github-slugger";
-import type { Post, TocItem } from "@/types";
+import type { Post, PostRelations, TocItem } from "@/types";
 
 const postsDirectory = path.join(process.cwd(), "content", "posts");
 
@@ -21,6 +21,25 @@ interface PostFrontmatter {
   description: string;
   tags?: string[];
   cover?: string;
+  category?: string;
+  relations?: {
+    parent?: string;
+    related?: string[];
+    children?: string[];
+  };
+}
+
+function parseCategory(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw.split("/").map((s) => s.trim()).filter(Boolean);
+}
+
+function parseRelations(raw: PostFrontmatter["relations"]): PostRelations {
+  return {
+    parent: raw?.parent ?? null,
+    related: raw?.related ?? [],
+    children: raw?.children ?? [],
+  };
 }
 
 function calculateReadingTime(text: string): number {
@@ -55,7 +74,7 @@ async function markdownToHtml(markdown: string): Promise<string> {
     .use(rehypePrettyCode, {
       theme: {
         light: "github-light",
-        dark: "github-dark-dimmed",
+        dark: "github-dark",
       },
       defaultLang: "plaintext",
       grid: true,
@@ -91,6 +110,8 @@ export async function getAllPosts(): Promise<Post[]> {
         tags: frontmatter.tags ?? [],
         readingTime: calculateReadingTime(fileContents),
         cover: frontmatter.cover,
+        category: parseCategory(frontmatter.category),
+        relations: parseRelations(frontmatter.relations),
       } satisfies Post;
     })
     .filter((post) => post.title && post.date)
@@ -127,6 +148,8 @@ export async function getPostBySlug(
     tags: frontmatter.tags ?? [],
     readingTime: calculateReadingTime(fileContents),
     cover: frontmatter.cover,
+    category: parseCategory(frontmatter.category),
+    relations: parseRelations(frontmatter.relations),
     content: html,
     toc,
   };

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/posts";
 import { TableOfContents } from "@/components/post/table-of-contents";
 import { RelatedArticles } from "@/components/post/related-articles";
+import { ArticleRelations } from "@/components/post/article-relations";
 import { GiscusComment } from "@/components/comment/giscus";
 import { blogConfig } from "@/config/blog.config";
 
@@ -48,6 +49,7 @@ export default async function PostPage({ params }: Props) {
   if (!post) notFound();
 
   const relatedPosts = await getRelatedPosts(slug, post.tags);
+  const allPosts = await getAllPosts();
 
   return (
     <main>
@@ -110,6 +112,9 @@ export default async function PostPage({ params }: Props) {
 
             {/* Related articles at article footer */}
             <RelatedArticles posts={relatedPosts} />
+
+            {/* Knowledge relations — parent / related / children */}
+            <ArticleRelations currentPost={post} allPosts={allPosts} />
 
             {/* Giscus comments via GitHub Discussions */}
             {blogConfig.comments.giscus.repoId &&

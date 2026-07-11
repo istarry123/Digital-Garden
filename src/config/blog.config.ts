@@ -1,50 +1,129 @@
 /**
  * Central blog configuration — single source of truth.
- * Every component and page MUST read from this config.
- * No hardcoded site-identity strings anywhere else.
+ *
+ * 所有组件和页面必须从此文件读取配置。
+ * 项目中禁止硬编码任何站点身份信息。
+ *
+ * 部署时只需修改此文件：
+ *   - 换域名       → site.url
+ *   - 换 Logo      → branding.favicon / branding.logo
+ *   - 修改个人简介 → hero.* / author.*
+ *   - 开关功能     → homepage.* / rss.enabled / comments.*
+ *   - 增删社交链接 → socialLinks[]
+ *   - 修改导航文案 → navigation.*
  */
 
 export const blogConfig = {
-  // ---- Site identity ----
+  // ===================================================================
+  // 站点身份 — 域名、名称、描述、语言
+  // ===================================================================
   site: {
+    /** 浏览器标签页默认标题，也用于 RSS / OG */
     name: "Digital Garden",
+    /** 首页 title */
     title: "Digital Garden",
+    /** 全局 meta description，搜索引擎和社交分享使用 */
     description:
       "A personal digital garden — notes, essays, and explorations about web development, tools, and systems.",
+    /** 生产环境域名（含 https://），部署时通过环境变量覆盖 */
     url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://digitalgarden.vercel.app",
+    /** <html lang> 属性，影响浏览器翻译和屏幕阅读器 */
     language: "zh-CN",
+    /** 日期格式化 locale，用于 toLocaleDateString */
     locale: "en-US",
   },
 
-  // ---- Author ----
+  // ===================================================================
+  // 作者信息 — 名称、简介、头像
+  // ===================================================================
   author: {
     name: "Digital Garden",
+    /** 短简介，用于 SEO 结构化数据 */
     bio: "A developer who writes about web, tools, and systems. Building things and sharing what I learn along the way.",
+    /** 头像路径，放在 public/images/ 下 */
     avatar: "/images/avatar.png",
   },
 
-  // ---- Favicon & Logo ----
+  // ===================================================================
+  // 品牌 — Favicon、Logo
+  // ===================================================================
   branding: {
+    /** 浏览器标签页图标，放在 public/ 下 */
     favicon: "/favicon.ico",
+    /** 站点 Logo，放在 public/images/ 下 */
     logo: "/images/logo.png",
+    /** 默认 OG 分享图（当文章没有 cover 时使用） */
+    ogImage: "/images/og-default.png",
   },
 
-  // ---- Homepage hero ----
+  // ===================================================================
+  // 首页 Hero 区域 — 问候语、个人介绍
+  // ===================================================================
   hero: {
+    /** Hero 区顶部小标签 */
     tagline: "Welcome to my corner of the internet",
+    /** 主标题第一行 */
     greeting: "Hi, I&apos;m a developer",
+    /** 主标题高亮文字（支持 HTML 实体如 &amp;） */
     highlight: "web, tools &amp; systems",
+    /** 个人描述段落 */
     description:
       "This is my digital garden — a space where I share notes, essays, and things I learn along the way. No pressure to be perfect, just a place to think in public.",
+    /** Hero 区按钮 */
+    buttons: {
+      github: {
+        label: "GitHub",
+        /** 链接读取 blogConfig.social.github */
+      },
+      rss: {
+        label: "RSS Feed",
+        href: "/rss.xml",
+      },
+    },
   },
 
-  // ---- Social links ----
+  // ===================================================================
+  // 首页板块开关 — 控制是否展示各内容区域
+  // ===================================================================
+  homepage: {
+    /** 是否展示 "Latest Articles" 板块 */
+    showLatestArticles: false,
+    /** 是否展示 "Latest Explore" 板块 */
+    showLatestExplore: false,
+  },
+
+  // ===================================================================
+  // 社交链接 — Hero 内联按钮 + Navbar 下拉菜单
+  // ===================================================================
   social: {
+    /** GitHub 主页 URL（Hero 按钮使用） */
     github: "https://github.com",
+    /** Twitter handle（layout metadata 使用） */
     twitter: "@digitalgarden",
   },
 
-  // ---- Page metadata ----
+  /** Navbar 社交下拉菜单 — 增删改只需编辑此数组 */
+  socialLinks: [
+    {
+      name: "GitHub",
+      url: "https://github.com",
+      icon: "github" as const,
+    },
+    {
+      name: "Twitter",
+      url: "https://twitter.com",
+      icon: "twitter" as const,
+    },
+    {
+      name: "Email",
+      url: "mailto:hello@example.com",
+      icon: "email" as const,
+    },
+  ],
+
+  // ===================================================================
+  // 各子页面元数据 — title、heading、description、空状态文案
+  // ===================================================================
   pages: {
     posts: {
       title: "Articles",
@@ -52,6 +131,7 @@ export const blogConfig = {
       description:
         "All articles from Digital Garden — notes, essays, and explorations.",
       emptyText: "No articles yet. Check back soon.",
+      /** 首页 Latest Articles 板块 */
       viewAll: "View all",
       latestHeading: "Latest Articles",
     },
@@ -64,32 +144,56 @@ export const blogConfig = {
       viewAll: "View all",
       latestHeading: "Latest Explore",
     },
+    graph: {
+      title: "Knowledge Graph",
+      description:
+        "Interactive map of articles — explore connections by topic and relationship.",
+    },
+    timeline: {
+      title: "Timeline",
+      description:
+        "A chronological journey through milestones, projects, and learning.",
+    },
   },
 
-  // ---- Posts configuration ----
+  // ===================================================================
+  // 文章系统配置
+  // ===================================================================
   posts: {
+    /** 文章列表每页数量（预留分页功能） */
     postsPerPage: 9,
+    /** 阅读速度（词/分钟），用于估算阅读时长 */
     readingSpeedWpm: 200,
+    /** 相关文章推荐数量 */
     relatedPostsLimit: 3,
+    /** 日期格式化 locale */
     dateLocale: "en-US",
   },
 
-  // ---- Code highlighting ----
+  // ===================================================================
+  // 代码高亮 — Shiki 双主题
+  // ===================================================================
   codeHighlighting: {
     theme: {
       light: "github-light" as const,
-      dark: "github-dark-dimmed" as const,
+      dark: "github-dark" as const,
     },
+    /** 未标注语言的代码块默认语言 */
     defaultLanguage: "plaintext",
+    /** 是否使用 CSS Grid 行号对齐 */
     grid: true,
   },
 
-  // ---- RSS ----
+  // ===================================================================
+  // RSS Feed
+  // ===================================================================
   rss: {
     enabled: true,
   },
 
-  // ---- Comments (Giscus) ----
+  // ===================================================================
+  // 评论系统 — Giscus (GitHub Discussions)
+  // ===================================================================
   comments: {
     provider: "giscus" as const,
     giscus: {
@@ -98,64 +202,106 @@ export const blogConfig = {
       category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY ?? "General",
       categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID ?? "",
     },
-    labels: {
-      title: "Comments",
-    },
   },
 
-  // ---- Search (future) ----
+  // ===================================================================
+  // 搜索（预留）
+  // ===================================================================
   search: {
     enabled: false,
   },
 
-  // ---- Analytics (future) ----
+  // ===================================================================
+  // 站点分析（预留 — Umami）
+  // ===================================================================
   analytics: {
     enabled: false,
     provider: "umami" as const,
-    umamiId: "",
+    /** Umami 网站 ID，部署时通过环境变量设置 */
+    umamiId: process.env.NEXT_PUBLIC_UMAMI_ID ?? "",
+    /** Umami 统计脚本 URL */
+    scriptUrl: "https://cloud.umami.is/script.js",
   },
 
-  // ---- Theme ----
+  // ===================================================================
+  // 主题 — next-themes 配置
+  // ===================================================================
   theme: {
     defaultTheme: "system" as const,
     themes: ["light", "dark", "system"] as const,
+    /** 主题注入方式：class → <html class="dark"> */
     attribute: "class" as const,
   },
 
-  // ---- Navigation ----
+  // ===================================================================
+  // ===================================================================
+  // 导航栏 — 图标链接的 label / title / iconKey
+  // ===================================================================
   navigation: {
     articles: {
       label: "Articles",
       title: "Articles",
+      iconKey: "articles" as const,
     },
     explore: {
       label: "Explore",
       title: "Explore",
+      iconKey: "explore" as const,
     },
     rss: {
       label: "RSS Feed",
       title: "RSS Feed",
+      iconKey: "rss" as const,
+    },
+    graph: {
+      label: "Knowledge Graph",
+      title: "Knowledge Graph",
+      iconKey: "graph" as const,
+    },
+    timeline: {
+      label: "Timeline",
+      title: "Timeline",
+      iconKey: "timeline" as const,
     },
   },
 
-  // ---- TOC ----
+  // ===================================================================
+  // 文章详情页 — TOC、Knowledge Relations、评论区文案
+  // ===================================================================
   toc: {
     heading: "On this page",
   },
 
-  // ---- Related articles ----
   relatedArticles: {
     heading: "Related Articles",
   },
 
-  // ---- Miscellaneous ----
+  articleRelations: {
+    heading: "Knowledge Relations",
+    parentLabel: "Parent Article",
+    relatedLabel: "Related Articles",
+    childrenLabel: "Child Articles",
+  },
+
+  // ===================================================================
+  // 404 页面
+  // ===================================================================
   notFound: {
     title: "404",
     description: "Page not found",
     backHome: "Back to home",
-    tagline: "",
+  },
+
+  // ===================================================================
+  // 页脚（预留 — 当前项目无 Footer 组件）
+  // ===================================================================
+  footer: {
+    /** 版权起始年份 */
+    copyrightSince: 2024,
+    /** 版权署名 */
+    copyrightName: "Digital Garden",
   },
 } as const;
 
-/** Inferred type of the full config object. */
+/** blogConfig 的完整类型，可用于组件的 props 类型约束 */
 export type BlogConfig = typeof blogConfig;

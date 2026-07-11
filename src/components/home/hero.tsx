@@ -32,13 +32,13 @@ export function Hero() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
-            GitHub
+            {hero.buttons.github.label}
           </a>
           <a
-            href="/rss.xml"
+            href={hero.buttons.rss.href}
             className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
-            RSS Feed
+            {hero.buttons.rss.label}
           </a>
         </div>
       </div>

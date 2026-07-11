@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm install *)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(mv \"d:/ssh/DigitalGarden/content/posts/centos系统部署和基本操作.md\" \"d:/ssh/DigitalGarden/content/posts/centos-deployment-guide.md\")"
     ]
   }
 }
