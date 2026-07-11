@@ -41,7 +41,7 @@ export const blogConfig = {
     /** 短简介，用于 SEO 结构化数据 */
     bio: "A developer who writes about web, tools, and systems. Building things and sharing what I learn along the way.",
     /** 头像路径，放在 public/assets/images/ 下 */
-    avatar: "img.istarry.top/images/head.jpg",
+    avatar: "https://img.istarry.top/images/head.jpg",
   },
 
   // ===================================================================
@@ -49,9 +49,9 @@ export const blogConfig = {
   // ===================================================================
   branding: {
     /** 浏览器标签页图标，放在 public/ 下 */
-    favicon: "/img.istarry.top/images/favicon.ico",
+    favicon: "https://img.istarry.top/images/favicon.ico",
     /** 站点 Logo，放在 public/assets/images/ 下 */
-    logo: "img.istarry.top/images/favicon.ico",
+    logo: "https://img.istarry.top/images/favicon.ico",
     /** 默认 OG 分享图（当文章没有 cover 时使用） */
     ogImage: "/assets/images/og-default.png",
   },
