@@ -1,5 +1,5 @@
 ---
-year: 2024
+year: 2025
 title: "业务上云与容器化"
 description: "将 HomeLab 中的核心服务迁移到云端，全面容器化部署，学习 Kubernetes 编排。"
 tags:

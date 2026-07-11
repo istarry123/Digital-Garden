@@ -1,5 +1,5 @@
 ---
-year: 2022
+year: 2024
 title: "搭建 HomeLab 实验环境"
 description: "在自家搭建虚拟化实验环境，部署 Proxmox、pfSense、Active Directory 等企业级基础设施。"
 tags:
