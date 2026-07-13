@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+/**
+ * ⚠️ images.remotePatterns 必须与 blogConfig.assets.remoteDomains 保持同步。
+ * 新增图床域名时两边都要加。
+ * @see src/config/blog.config.ts
+ */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
@@ -10,12 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
-      // Image CDN (when NEXT_PUBLIC_IMAGE_CDN is set)
-      // Uncomment and replace with your CDN domain:
-      // {
-      //   protocol: "https",
-      //   hostname: "cdn.example.com",
-      // },
+      {
+        protocol: "https",
+        hostname: "img.istarry.top",
+      },
     ],
   },
 };

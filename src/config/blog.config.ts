@@ -19,9 +19,9 @@ export const blogConfig = {
   // ===================================================================
   site: {
     /** 浏览器标签页默认标题，也用于 RSS / OG */
-    name: "IStarry's Digital Garden",
+    name: "IStarry",
     /** 首页 title */
-    title: "IStarry",
+    title: "IStarry's Digital Garden",
     /** 全局 meta description，搜索引擎和社交分享使用 */
     description:
       "A personal digital garden — notes, essays, and explorations about web development, tools, and systems.",
@@ -49,7 +49,7 @@ export const blogConfig = {
   // ===================================================================
   branding: {
     /** 浏览器标签页图标，放在 public/ 下 */
-    favicon: "https://img.istarry.top/images/favicon.ico",
+    favicon: "/assets/images/favicon.ico",
     /** 站点 Logo，放在 public/assets/images/ 下 */
     logo: "https://img.istarry.top/images/favicon.ico",
     /** 默认 OG 分享图（当文章没有 cover 时使用） */
@@ -65,10 +65,18 @@ export const blogConfig = {
     /**
      * 网络图床 CDN 前缀（可选）。
      * 设置后，Markdown 中的图片优先使用 CDN URL。
-     * 例如：NEXT_PUBLIC_IMAGE_CDN=https://cdn.example.com
-     * 引用方式：/assets/images/photo.png → https://cdn.example.com/assets/images/photo.png
+     * 引用方式：/assets/images/photo.png → https://img.istarry.top/assets/images/photo.png
      */
-    cdnUrl: process.env.NEXT_PUBLIC_IMAGE_CDN ?? "",
+    cdnUrl: process.env.NEXT_PUBLIC_IMAGE_CDN ?? "https://img.istarry.top",
+    /**
+     * 远程图片域名白名单。
+     * 用于文章 cover 封面图（next/image 远程优化）和 Markdown 正文图片。
+     * ⚠️ 新增图床域名时，需同步更新 next.config.ts → images.remotePatterns。
+     */
+    remoteDomains: [
+      "picsum.photos",
+      "img.istarry.top",
+    ],
   },
 
   // ===================================================================
@@ -78,7 +86,7 @@ export const blogConfig = {
     /** Hero 区顶部小标签 */
     tagline: "Welcome to My Digital Garden 🌱",
     /** 主标题第一行 */
-    greeting: "Hi, I'm the developer Also an IStarry. ",
+    greeting: "Hi, I'm IStarry, a developer. ",
     /** 主标题高亮文字（支持 HTML 实体如 &amp;） */
     highlight: "Systems, Security & Engineering Practice",
     /** 个人描述段落 */

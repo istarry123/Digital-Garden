@@ -26,8 +26,6 @@ function walk(node: Root | RootContent): void {
 
     node.properties = {
       ...props,
-      loading: "lazy",
-      decoding: "async",
       className: [...classes, "content-image"],
     };
   }
