@@ -235,15 +235,46 @@ export const blogConfig = {
   },
 
   // ===================================================================
-  // 站点分析（预留 — Umami）
+  // 站点分析 — 支持同时启用多个统计服务
+  // 通过环境变量配置各服务的 ID，将 enabled 设为 true 即可激活
   // ===================================================================
   analytics: {
+    /** 全局开关 — 设为 false 则禁用所有统计脚本 */
     enabled: false,
-    provider: "umami" as const,
-    /** Umami 网站 ID，部署时通过环境变量设置 */
-    umamiId: process.env.NEXT_PUBLIC_UMAMI_ID ?? "",
-    /** Umami 统计脚本 URL */
-    scriptUrl: "https://cloud.umami.is/script.js",
+    providers: {
+      umami: {
+        enabled: false,
+        /** Umami 网站 ID，部署时通过环境变量设置 */
+        id: process.env.NEXT_PUBLIC_UMAMI_ID ?? "",
+        /** Umami 统计脚本 URL（自部署请改为自己的地址） */
+        scriptUrl: "https://cloud.umami.is/script.js",
+      },
+      google: {
+        enabled: false,
+        /** Google Analytics 4 衡量 ID，格式: G-XXXXXXXXXX */
+        measurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "",
+      },
+      /** 51la 网站统计 */
+      la51: {
+        enabled: false,
+        /** 51la 网站 ID */
+        id: process.env.NEXT_PUBLIC_51LA_ID ?? "",
+        /** 51la ck 密钥（部分场景需要） */
+        ck: process.env.NEXT_PUBLIC_51LA_CK ?? "",
+      },
+      /** 百度统计 */
+      baidu: {
+        enabled: false,
+        /** 百度统计 token，即 hm.js? 后面的那串 ID */
+        id: process.env.NEXT_PUBLIC_BAIDU_TONGJI_ID ?? "",
+      },
+      /** Microsoft Clarity */
+      clarity: {
+        enabled: false,
+        /** Clarity 项目 ID */
+        id: process.env.NEXT_PUBLIC_CLARITY_ID ?? "",
+      },
+    },
   },
 
   // ===================================================================

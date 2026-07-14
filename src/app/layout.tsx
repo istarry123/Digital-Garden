@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
+import { Analytics } from "@/components/analytics/Analytics";
 import { blogConfig } from "@/config/blog.config";
 import "./globals.css";
 
@@ -52,6 +53,7 @@ export default function RootLayout({
           <Navbar />
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
