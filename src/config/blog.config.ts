@@ -240,7 +240,7 @@ export const blogConfig = {
   // ===================================================================
   analytics: {
     /** 全局开关 — 设为 false 则禁用所有统计脚本 */
-    enabled: false,
+    enabled: true,
     providers: {
       umami: {
         enabled: false,
@@ -256,7 +256,7 @@ export const blogConfig = {
       },
       /** 51la 网站统计 */
       la51: {
-        enabled: false,
+        enabled: true,
         /** 51la 网站 ID */
         id: process.env.NEXT_PUBLIC_51LA_ID ?? "3QY3fcmNgSjP54ai",
         /** 51la ck 密钥（部分场景需要） */
