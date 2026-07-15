@@ -264,9 +264,9 @@ export const blogConfig = {
       },
       /** 百度统计 */
       baidu: {
-        enabled: false,
+        enabled: true,
         /** 百度统计 token，即 hm.js? 后面的那串 ID */
-        id: process.env.NEXT_PUBLIC_BAIDU_TONGJI_ID ?? "",
+        id: process.env.NEXT_PUBLIC_BAIDU_TONGJI_ID ?? "7cff641d8826a80981ec7f2a89b5b77f",
       },
       /** Microsoft Clarity */
       clarity: {
