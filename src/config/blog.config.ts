@@ -250,9 +250,9 @@ export const blogConfig = {
         scriptUrl: "https://cloud.umami.is/script.js",
       },
       google: {
-        enabled: false,
+        enabled: true,
         /** Google Analytics 4 衡量 ID，格式: G-XXXXXXXXXX */
-        measurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "",
+        measurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-TNWHN0DLLC",
       },
       /** 51la 网站统计 */
       la51: {
