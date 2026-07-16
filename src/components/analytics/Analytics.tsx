@@ -3,6 +3,12 @@
 import Script from "next/script";
 import { blogConfig } from "@/config/blog.config";
 
+declare global {
+  interface Window {
+    LA?: { init: (opts: { id: string; ck: string }) => void };
+  }
+}
+
 const { analytics } = blogConfig;
 
 export function Analytics() {
@@ -54,7 +60,7 @@ export function Analytics() {
           strategy="afterInteractive"
           src="https://sdk.51.la/js-sdk-pro.min.js"
           onLoad={() => {
-            LA.init({ id: providers.la51.id, ck: providers.la51.ck });
+            window.LA?.init({ id: providers.la51.id, ck: providers.la51.ck });
           }}
         />
       )}
