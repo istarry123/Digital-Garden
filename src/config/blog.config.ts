@@ -258,7 +258,7 @@ export const blogConfig = {
       la51: {
         enabled: true,
         /** 51la 网站 ID */
-        id: process.env.NEXT_PUBLIC_51LA_ID ?? "3150442",
+        id: process.env.NEXT_PUBLIC_51LA_ID ?? "3QY3fcmNgSjP54ai",
         /** 51la ck 密钥（部分场景需要） */
         ck: process.env.NEXT_PUBLIC_51LA_CK ?? "3QY3fcmNgSjP54ai",
       },
