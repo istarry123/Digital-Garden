@@ -57,7 +57,7 @@ export function Analytics() {
         <Script
           id="LA_COLLECT"
           charSet="UTF-8"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
           src="https://sdk.51.la/js-sdk-pro.min.js"
           onLoad={() => {
             window.LA?.init({ id: providers.la51.id, ck: providers.la51.ck });
