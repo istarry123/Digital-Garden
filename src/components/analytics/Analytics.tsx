@@ -69,7 +69,7 @@ export function Analytics() {
       {providers.baidu.enabled && providers.baidu.id && (
         <Script
           id="baidu-tongji"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               var _hmt = _hmt || [];
