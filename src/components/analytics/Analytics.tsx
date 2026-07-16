@@ -48,20 +48,15 @@ export function Analytics() {
 
       {/* 51la */}
       {providers.la51.enabled && providers.la51.id && (
-        <>
-          <Script
-            id="la51-sdk"
-            strategy="afterInteractive"
-            src="//sdk.51.la/js-sdk-pro.min.js"
-          />
-          <Script
-            id="la51-init"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `LA.init({id:"${providers.la51.id}",ck:"${providers.la51.ck}"})`,
-            }}
-          />
-        </>
+        <Script
+          id="LA_COLLECT"
+          charSet="UTF-8"
+          strategy="afterInteractive"
+          src="https://sdk.51.la/js-sdk-pro.min.js"
+          onLoad={() => {
+            LA.init({ id: providers.la51.id, ck: providers.la51.ck });
+          }}
+        />
       )}
 
       {/* 百度统计 */}
