@@ -1,8 +1,8 @@
 ---
 date: "2026-07-31"
-mood: mastering
+mood: philosophical
 tags:
-  - reprinted
+  - contemplative
 ---
 
 就命运而言，休伦公道。 
