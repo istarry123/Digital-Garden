@@ -24,18 +24,6 @@ export interface TocItem {
   slug: string;
 }
 
-// === Activity (homepage mock data) ===
-export type ActivityType = "star" | "commit" | "issue" | "pr";
-
-export interface Activity {
-  id: string;
-  type: ActivityType;
-  repo: string;
-  description: string;
-  url: string;
-  date: string;
-}
-
 // === Explore ===
 export interface ExploreEntry {
   slug: string;

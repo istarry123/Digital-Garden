@@ -11,6 +11,7 @@
  *   - 开关功能     → homepage.* / rss.enabled / comments.*
  *   - 增删社交链接 → socialLinks[]
  *   - 修改导航文案 → navigation.*
+ *   - 改备案号     → footer.icp.number
  */
 
 export const blogConfig = {
@@ -73,27 +74,38 @@ export const blogConfig = {
      * 用于文章 cover 封面图（next/image 远程优化）和 Markdown 正文图片。
      * ⚠️ 新增图床域名时，需同步更新 next.config.ts → images.remotePatterns。
      */
-    remoteDomains: [
-      "picsum.photos",
-      "img.istarry.top",
-    ],
+    remoteDomains: ["picsum.photos", "img.istarry.top"],
   },
 
   // ===================================================================
   // 首页 Hero 区域 — 问候语、个人介绍
   // ===================================================================
+  // 首页 Hero 区域
+  // -------------------------------------------------------------------
+  // 渲染方式（P1 起）：
+  //   tagline     → 顶部等宽提示行（终端语境标记，不再是大写小标签）
+  //   greeting    → 主标题第一行（大字号）
+  //   highlight   → 主标题第二行（中字号、次要色，按纯文本渲染，不再注入 HTML）
+  //   description → 描述段落
+  //   索引行       → 文章 / 笔记 / 里程碑 / 最近更新，数字由真实内容自动统计
+  // ===================================================================
   hero: {
-    /** Hero 区顶部小标签 */
-    tagline: "Welcome to My Digital Garden 🌱",
-    /** 主标题第一行 */
-    greeting: "Hi, I'm IStarry, a developer. ",
-    /** 主标题高亮文字（支持 HTML 实体如 &amp;） */
+    /** 顶部提示行（等宽字体渲染） */
+    tagline: "~/garden",
+    /** 主标题第一行：站点主人 */
+    greeting: "IStarry",
+    /** 主标题第二行：一句话定位 */
     highlight: "Systems, Security & Engineering Practice",
     /** 个人描述段落 */
     description:
-      "记录我的技术探索与工程实践，涵盖 Linux、网络架构、信息安全、服务器运维以及企业 IT 系统建设。这里不仅是博客，也是一个持续成长的知识库.",
+      "记录我的技术探索与工程实践，涵盖 Linux、网络架构、信息安全、服务器运维以及企业 IT 系统建设。这里不仅是博客，也是一个持续成长的知识库。",
     /** Hero 区按钮 */
     buttons: {
+      /** 主按钮 —— 全站唯一的实心按钮，指向内容入口 */
+      primary: {
+        label: "开始阅读",
+        href: "/posts",
+      },
       github: {
         label: "GitHub",
         /** 链接读取 blogConfig.social.github */
@@ -176,6 +188,14 @@ export const blogConfig = {
       title: "Timeline",
       description:
         "A chronological journey through milestones, projects, and learning.",
+      emptyText: "No milestones yet.",
+    },
+    tags: {
+      title: "Tags",
+      heading: "Tags",
+      description:
+        "All tags across articles, notes, and milestones — pick one to see everything filed under it.",
+      emptyText: "No tags yet.",
     },
   },
 
@@ -252,7 +272,8 @@ export const blogConfig = {
       google: {
         enabled: true,
         /** Google Analytics 4 衡量 ID，格式: G-XXXXXXXXXX */
-        measurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-TNWHN0DLLC",
+        measurementId:
+          process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-TNWHN0DLLC",
       },
       /** 51la 网站统计 */
       la51: {
@@ -266,7 +287,9 @@ export const blogConfig = {
       baidu: {
         enabled: true,
         /** 百度统计 token，即 hm.js? 后面的那串 ID */
-        id: process.env.NEXT_PUBLIC_BAIDU_TONGJI_ID ?? "7cff641d8826a80981ec7f2a89b5b77f",
+        id:
+          process.env.NEXT_PUBLIC_BAIDU_TONGJI_ID ??
+          "7cff641d8826a80981ec7f2a89b5b77f",
       },
       /** Microsoft Clarity */
       clarity: {
@@ -281,41 +304,55 @@ export const blogConfig = {
   // 主题 — next-themes 配置
   // ===================================================================
   theme: {
-    defaultTheme: "system" as const,
+    /** 深色优先：本站以深色为第一公民，浅色为对偶主题 */
+    defaultTheme: "dark" as const,
     themes: ["light", "dark", "system"] as const,
     /** 主题注入方式：class → <html class="dark"> */
     attribute: "class" as const,
   },
 
   // ===================================================================
-  // ===================================================================
-  // 导航栏 — 图标链接的 label / title / iconKey
+  // 导航栏 — 每个导航项的路由、文案与图标
+  // -------------------------------------------------------------------
+  // href 统一放在这里，组件内不再硬编码任何路由。
+  // 桌面端渲染文字标签（图标无法自解释），移动端抽屉里图标 + 文字并用。
   // ===================================================================
   navigation: {
     articles: {
       label: "Articles",
       title: "Articles",
+      href: "/posts",
       iconKey: "articles" as const,
     },
     explore: {
       label: "Explore",
       title: "Explore",
+      href: "/explore",
       iconKey: "explore" as const,
     },
     rss: {
       label: "RSS Feed",
       title: "RSS Feed",
+      href: "/rss.xml",
       iconKey: "rss" as const,
     },
     graph: {
       label: "Knowledge Graph",
       title: "Knowledge Graph",
+      href: "/graph",
       iconKey: "graph" as const,
     },
     timeline: {
       label: "Timeline",
       title: "Timeline",
+      href: "/timeline",
       iconKey: "timeline" as const,
+    },
+    tags: {
+      label: "Tags",
+      title: "Tags",
+      href: "/tags",
+      iconKey: "tags" as const,
     },
   },
 
@@ -343,17 +380,31 @@ export const blogConfig = {
   notFound: {
     title: "404",
     description: "Page not found",
+    /** 404 页的补充说明（告诉用户发生了什么、下一步能去哪） */
+    hint: "这个地址没有对应的页面，可能是链接已经移动或被删除了。可以从下面这些入口重新开始：",
     backHome: "Back to home",
   },
 
   // ===================================================================
-  // 页脚（预留 — 当前项目无 Footer 组件）
+  // 页脚 — 版权署名 + ICP 备案（由 Footer 组件全局渲染于每个页面底部）
   // ===================================================================
   footer: {
     /** 版权起始年份 */
     copyrightSince: 2026,
     /** 版权署名 */
     copyrightName: "istarry",
+    /**
+     * ICP 备案信息。
+     * 工信部要求网站页脚展示备案号，并链接至 beian.miit.gov.cn 供核查。
+     */
+    icp: {
+      /** 设为 false 则隐藏备案号 */
+      enabled: true,
+      /** 备案号文本 */
+      number: "鲁ICP备2025169299号",
+      /** 工信部备案查询站点 — 官方要求的回跳地址，一般无需修改 */
+      link: "https://beian.miit.gov.cn/",
+    },
   },
 } as const;
 

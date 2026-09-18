@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/posts";
-import { PostCard } from "@/components/post/post-card";
+import { FeaturedPost } from "@/components/post/featured-post";
+import { PostRow } from "@/components/post/post-row";
+import { Container } from "@/components/layout/container";
 import { blogConfig } from "@/config/blog.config";
 
 const { site, pages } = blogConfig;
@@ -23,24 +25,37 @@ export const metadata: Metadata = {
 
 export default async function PostsPage() {
   const posts = await getAllPosts();
+  const [featured, ...rest] = posts;
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-20">
-      <h1 className="mb-10 text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-        {postsPage.heading}
-      </h1>
+    <Container as="main" width="list" className="py-20">
+      <header className="mb-10 border-b border-hairline pb-8">
+        <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+          {postsPage.heading}
+        </h1>
+        <p className="mt-3 max-w-2xl leading-relaxed text-muted">
+          {postsPage.description}
+        </p>
+        <p className="mt-5 font-mono text-xs text-faint">
+          共 {posts.length} 篇
+        </p>
+      </header>
 
       {posts.length === 0 ? (
-        <p className="text-neutral-500 dark:text-neutral-400">
-          {postsPage.emptyText}
-        </p>
+        <p className="text-muted">{postsPage.emptyText}</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </div>
+        <>
+          {featured && <FeaturedPost post={featured} />}
+
+          {rest.length > 0 && (
+            <ul className="mt-14 divide-y divide-hairline border-t border-hairline">
+              {rest.map((post) => (
+                <PostRow key={post.slug} post={post} />
+              ))}
+            </ul>
+          )}
+        </>
       )}
-    </main>
+    </Container>
   );
 }

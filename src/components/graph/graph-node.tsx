@@ -11,6 +11,11 @@ interface ArticleNodeData {
   tags: string[];
 }
 
+/**
+ * 图谱节点 —— 只保留"标题 + 分类"。
+ * 之前还叠了最多 3 个标签 chip，一屏几十个节点时会糊成一片；
+ * 标签信息在图谱这个尺度上是噪音。
+ */
 export function ArticleNode({ data }: { data: ArticleNodeData }) {
   const router = useRouter();
 
@@ -23,38 +28,33 @@ export function ArticleNode({ data }: { data: ArticleNodeData }) {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer rounded-xl border-2 border-neutral-300 bg-white px-5 py-3 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-600 dark:bg-neutral-900"
+      onKeyDown={(event) => {
+        if (event.key === "Enter") onClick();
+      }}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") onClick();
-      }}
+      className="cursor-pointer rounded-control border border-hairline bg-surface px-4 py-2.5 shadow-card transition-colors hover:border-accent"
     >
-      <Handle type="target" position={Position.Top} className="!bg-neutral-400" />
-      <Handle type="source" position={Position.Bottom} className="!bg-neutral-400" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="!h-1.5 !w-1.5 !border-0 !bg-hairline-strong"
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="!h-1.5 !w-1.5 !border-0 !bg-hairline-strong"
+      />
 
       {catLabel && (
-        <p className="mb-1 text-[0.65rem] font-medium tracking-wide text-blue-600 uppercase dark:text-blue-400">
+        <p className="mb-1 font-mono text-[0.65rem] tracking-wide text-faint">
           {catLabel}
         </p>
       )}
 
-      <p className="max-w-[180px] text-sm font-semibold leading-snug text-neutral-900 dark:text-neutral-100">
+      <p className="max-w-[180px] text-sm font-medium leading-snug text-ink">
         {data.title}
       </p>
-
-      {data.tags.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {data.tags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="rounded bg-neutral-100 px-1.5 py-0.5 text-[0.65rem] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

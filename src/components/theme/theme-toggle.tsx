@@ -95,7 +95,7 @@ function CheckIcon() {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-4 w-4 text-blue-600 dark:text-blue-400"
+      className="h-4 w-4 text-accent-text"
       aria-hidden="true"
     >
       <polyline points="20 6 9 17 4 12" />
@@ -115,7 +115,10 @@ export function ThemeToggle() {
   useEffect(() => {
     if (!open) return;
     function handler(e: PointerEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     }
@@ -144,7 +147,7 @@ export function ThemeToggle() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-9 items-center gap-1 rounded-md px-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+        className="inline-flex h-9 items-center gap-1 rounded-md px-2 text-muted transition-colors hover:bg-raised hover:text-ink"
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label="Select theme"
@@ -157,7 +160,7 @@ export function ThemeToggle() {
         <div
           role="menu"
           aria-label="Theme options"
-          className="absolute right-0 z-50 mt-1 min-w-[140px] origin-top-right rounded-lg border border-neutral-200 bg-white p-1 shadow-lg dark:border-neutral-700 dark:bg-neutral-900"
+          className="absolute right-0 z-50 mt-1 min-w-[140px] origin-top-right rounded-control border border-hairline bg-overlay p-1 shadow-lg"
         >
           {OPTIONS.map((option) => (
             <button
@@ -169,11 +172,9 @@ export function ThemeToggle() {
                 setTheme(option.theme);
                 setOpen(false);
               }}
-              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-ink transition-colors hover:bg-raised"
             >
-              <span className="text-neutral-600 dark:text-neutral-400">
-                {ICON[option.theme]}
-              </span>
+              <span className="text-muted">{ICON[option.theme]}</span>
               <span className="flex-1 text-left">{option.label}</span>
               {option.theme === current && <CheckIcon />}
             </button>

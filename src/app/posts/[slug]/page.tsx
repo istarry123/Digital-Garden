@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/posts";
+import { formatDate } from "@/lib/format";
 import { TableOfContents } from "@/components/post/table-of-contents";
 import { RelatedArticles } from "@/components/post/related-articles";
 import { ArticleRelations } from "@/components/post/article-relations";
+import { CopyLink } from "@/components/post/copy-link";
+import { ReadingProgress } from "@/components/post/reading-progress";
+import { TagList } from "@/components/post/tag-list";
+import { CoverImage } from "@/components/post/cover-image";
+import { AuthorAvatar } from "@/components/post/author-avatar";
 import { GiscusComment } from "@/components/comment/giscus";
+import { Container } from "@/components/layout/container";
 import { blogConfig } from "@/config/blog.config";
 
 interface Props {
@@ -50,63 +56,58 @@ export default async function PostPage({ params }: Props) {
 
   const relatedPosts = await getRelatedPosts(slug, post.tags);
   const allPosts = await getAllPosts();
+  const { author } = blogConfig;
 
   return (
     <main>
-      {/* Cover image — contained hero, sits entirely above the content grid */}
-      {post.cover ? (
-        <div className="mx-auto max-w-5xl px-6 pt-8">
-          <div className="relative overflow-hidden rounded-xl bg-neutral-100 shadow-lg dark:bg-neutral-800">
-            <Image
-              src={post.cover}
-              alt={post.title}
-              width={1200}
-              height={630}
-              priority
-              className="aspect-[1200/630] w-full object-cover"
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="pt-8" />
-      )}
+      <ReadingProgress />
 
-      {/* Content area: article (centered, 800px) + TOC (240px sidebar) */}
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] lg:gap-x-10">
-          {/* Article body — centered within its column, comfortable reading width */}
-          <article className="mx-auto w-full max-w-[800px] min-w-0">
+      {/* 正文列 44rem + 目录 15rem 合成一个整体块，封面与正文左边缘对齐 */}
+      <Container width="reading" className="py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,44rem)_15rem] lg:justify-center lg:gap-x-10">
+          <article className="w-full min-w-0">
+            {post.cover && (
+              <div className="relative mb-10 aspect-[1200/630] overflow-hidden rounded-card border border-hairline bg-raised">
+                <CoverImage
+                  src={post.cover}
+                  sizes="(min-width: 1024px) 704px, 100vw"
+                  priority
+                />
+              </div>
+            )}
+
             <header className="mb-10">
-              <h1 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-100">
+              <h1 className="text-3xl font-semibold leading-[1.15] tracking-[-0.02em] text-ink sm:text-[2.5rem]">
                 {post.title}
               </h1>
 
-              <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-                <time dateTime={post.date}>
-                  {new Date(post.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-                <span aria-hidden="true">&middot;</span>
-                <span>{post.readingTime} min read</span>
+              {post.summary && (
+                <p className="mt-4 text-lg leading-relaxed text-muted">
+                  {post.summary}
+                </p>
+              )}
+
+              <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-3 border-t border-hairline pt-5">
+                <AuthorAvatar src={author.avatar} name={author.name} />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-ink">{author.name}</p>
+                  <p className="mt-0.5 flex items-center gap-2.5 font-mono text-xs text-faint">
+                    <time dateTime={post.date}>{formatDate(post.date)}</time>
+                    <span
+                      aria-hidden="true"
+                      className="h-3 w-px bg-hairline-strong"
+                    />
+                    <span>{post.readingTime} min read</span>
+                  </p>
+                </div>
+                <CopyLink />
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-md bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              <TagList tags={post.tags} className="mt-5" />
             </header>
 
             <div
-              className="prose prose-neutral max-w-none dark:prose-invert"
+              className="prose max-w-none"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
@@ -119,18 +120,16 @@ export default async function PostPage({ params }: Props) {
             {/* Giscus comments via GitHub Discussions */}
             {blogConfig.comments.giscus.repoId &&
               blogConfig.comments.giscus.categoryId && (
-              <GiscusComment config={blogConfig.comments.giscus} />
-            )}
+                <GiscusComment config={blogConfig.comments.giscus} />
+              )}
           </article>
 
-          {/* TOC sidebar — stays within its column, starts below the cover */}
           <aside className="hidden lg:block">
-            <div className="sticky top-24">
-              <TableOfContents items={post.toc} />
-            </div>
+            {/* sticky 与内部滚动由 TableOfContents 自己负责（长目录也能滚） */}
+            <TableOfContents items={post.toc} />
           </aside>
         </div>
-      </div>
+      </Container>
     </main>
   );
 }

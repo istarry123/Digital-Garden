@@ -1,47 +1,110 @@
+import Link from "next/link";
 import { blogConfig } from "@/config/blog.config";
+import { Container } from "@/components/layout/container";
 
 const { hero, social } = blogConfig;
 
-export function Hero() {
+export interface HeroStat {
+  label: string;
+  value: string;
+  href: string;
+}
+
+/**
+ * 首页首屏。
+ *
+ * 结构对应"这个站的题材"：一个以 Linux / 网络 / 信息安全 / 运维为题材的
+ * 技术花园。因此首屏用等宽提示行标出语境，用真实内容统计代替口号 ——
+ * 索引行的数字全部来自 content/ 目录，是"花园在生长"的证据而不只是装饰。
+ */
+export function Hero({ stats }: { stats: HeroStat[] }) {
   return (
-    <section className="relative flex min-h-[70vh] flex-col justify-center px-6 pb-16 pt-32">
-      <div className="mx-auto w-full max-w-2xl">
-        <p className="mb-4 text-sm font-medium tracking-wide text-blue-600 uppercase dark:text-blue-400">
+    <section className="relative isolate overflow-hidden">
+      {/* 首屏唯一的装饰：极淡栅格 + 顶部径向淡出 */}
+      <div
+        aria-hidden="true"
+        className="hero-grid pointer-events-none absolute inset-0 -z-10"
+      />
+
+      <Container width="prose" className="hero-enter pb-24 pt-28 sm:pt-32">
+        <p className="flex items-center gap-2.5 font-mono text-xs text-faint">
+          <span
+            aria-hidden="true"
+            className="inline-block h-3.5 w-1.5 shrink-0 bg-accent"
+          />
           {hero.tagline}
         </p>
 
-        <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight text-neutral-900 sm:text-5xl dark:text-neutral-100">
-          {hero.greeting}
-          <br />
-          who writes about{" "}
-          <span
-            className="text-blue-600 dark:text-blue-400"
-            dangerouslySetInnerHTML={{ __html: hero.highlight }}
-          />
-          .
+        <h1 className="mt-8">
+          <span className="block text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[3.5rem]">
+            {hero.greeting}
+          </span>
+          <span className="mt-4 block text-xl leading-snug text-muted sm:text-2xl">
+            {hero.highlight}
+          </span>
         </h1>
 
-        <p className="max-w-lg text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
+        <p className="mt-8 max-w-[34rem] text-base leading-[1.9] text-muted">
           {hero.description}
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
+          <Link
+            href={hero.buttons.primary.href}
+            className="inline-flex items-center gap-2 rounded-control bg-accent-solid px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-solid-hover"
+          >
+            {hero.buttons.primary.label}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4"
+              aria-hidden="true"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </Link>
+
           <a
             href={social.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+            className="text-sm font-medium text-muted transition-colors hover:text-ink"
           >
             {hero.buttons.github.label}
           </a>
+
           <a
             href={hero.buttons.rss.href}
-            className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+            className="text-sm font-medium text-muted transition-colors hover:text-ink"
           >
             {hero.buttons.rss.label}
           </a>
         </div>
-      </div>
+
+        {stats.length > 0 && (
+          <dl className="mt-24 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-hairline pt-8 sm:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <dt className="font-mono text-xs text-faint">{stat.label}</dt>
+                <dd className="mt-1.5">
+                  <Link
+                    href={stat.href}
+                    className="text-lg font-medium text-ink transition-colors hover:text-accent-text"
+                  >
+                    {stat.value}
+                  </Link>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </Container>
     </section>
   );
 }

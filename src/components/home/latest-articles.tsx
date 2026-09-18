@@ -1,25 +1,32 @@
 import Link from "next/link";
-import { mockPosts } from "@/lib/mock-data";
+import type { Post } from "@/types";
 import { PostCard } from "@/components/post/post-card";
+import { Container } from "@/components/layout/container";
 import { blogConfig } from "@/config/blog.config";
 
 const postsPage = blogConfig.pages.posts;
 
-export function LatestArticles() {
-  const latest = mockPosts.slice(0, 3);
+/**
+ * 首页"最新文章"板块。
+ * 数据由首页服务端组件传入（此前这里读的是 lib/mock-data 的假数据）。
+ * 是否展示由 blogConfig.homepage.showLatestArticles 控制。
+ */
+export function LatestArticles({ posts }: { posts: Post[] }) {
+  const latest = posts.slice(0, 3);
+  if (latest.length === 0) return null;
 
   return (
-    <section className="px-6 py-20">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-10 flex items-end justify-between">
-          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+    <section className="border-t border-hairline">
+      <Container className="py-16">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-2xl font-semibold tracking-tight text-ink">
             {postsPage.latestHeading}
           </h2>
           <Link
             href="/posts"
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="text-sm font-medium text-accent-text underline-offset-4 hover:underline"
           >
-            {postsPage.viewAll} &rarr;
+            {postsPage.viewAll}
           </Link>
         </div>
 
@@ -28,7 +35,7 @@ export function LatestArticles() {
             <PostCard key={post.slug} post={post} />
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

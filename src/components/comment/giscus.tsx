@@ -12,8 +12,8 @@ interface GiscusConfig {
 
 export function GiscusComment({ config }: { config: GiscusConfig }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-  const resolvedTheme = theme ?? "system";
+  // 同理：用 resolvedTheme 才能正确处理"跟随系统"
+  const { resolvedTheme } = useTheme();
   const giscusTheme = resolvedTheme === "dark" ? "dark" : "light";
 
   // Load Giscus script once on mount
@@ -60,7 +60,7 @@ export function GiscusComment({ config }: { config: GiscusConfig }) {
   return (
     <section
       ref={containerRef}
-      className="mt-16 border-t border-neutral-200 pt-12 dark:border-neutral-800"
+      className="mt-16 border-t border-hairline pt-12"
       aria-label="Comments"
     />
   );

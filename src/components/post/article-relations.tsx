@@ -24,20 +24,18 @@ function RelationLink({ post }: { post: Post }) {
   return (
     <Link
       href={`/posts/${post.slug}`}
-      className="group block rounded-lg border border-neutral-200 bg-white p-4 transition-shadow hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+      className="group block rounded-control border border-hairline bg-surface p-4 shadow-card transition-colors hover:border-hairline-strong"
     >
-      <p className="text-sm font-medium text-neutral-900 group-hover:text-blue-600 dark:text-neutral-100 dark:group-hover:text-blue-400">
+      <p className="text-sm font-medium text-ink group-hover:text-accent-text">
         {post.title}
       </p>
-      <p className="mt-1 line-clamp-2 text-xs text-neutral-500 dark:text-neutral-400">
-        {post.summary}
-      </p>
+      <p className="mt-1 line-clamp-2 text-xs text-muted">{post.summary}</p>
       {post.tags.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
           {post.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded bg-neutral-100 px-1.5 py-0.5 text-[0.65rem] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400"
+              className="rounded bg-raised px-1.5 py-0.5 text-[0.65rem] text-muted"
             >
               {tag}
             </span>
@@ -59,12 +57,12 @@ export function ArticleRelations({ currentPost, allPosts }: Props) {
 
   return (
     <section
-      className="mt-20 border-t border-neutral-200 pt-12 dark:border-neutral-800"
+      className="mt-20 border-t border-hairline pt-12"
       aria-labelledby="knowledge-relations-heading"
     >
       <h2
         id="knowledge-relations-heading"
-        className="mb-6 text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100"
+        className="mb-6 text-xl font-semibold tracking-tight text-ink"
       >
         {articleRelations.heading}
       </h2>
@@ -72,7 +70,7 @@ export function ArticleRelations({ currentPost, allPosts }: Props) {
       <div className="space-y-8">
         {parent && (
           <div>
-            <p className="mb-2 text-xs font-semibold tracking-wider uppercase text-neutral-400 dark:text-neutral-500">
+            <p className="mb-2 font-mono text-xs tracking-wide text-faint">
               {articleRelations.parentLabel}
             </p>
             <RelationLink post={parent} />
@@ -81,7 +79,7 @@ export function ArticleRelations({ currentPost, allPosts }: Props) {
 
         {related.length > 0 && (
           <div>
-            <p className="mb-2 text-xs font-semibold tracking-wider uppercase text-neutral-400 dark:text-neutral-500">
+            <p className="mb-2 font-mono text-xs tracking-wide text-faint">
               {articleRelations.relatedLabel}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -94,7 +92,7 @@ export function ArticleRelations({ currentPost, allPosts }: Props) {
 
         {children.length > 0 && (
           <div>
-            <p className="mb-2 text-xs font-semibold tracking-wider uppercase text-neutral-400 dark:text-neutral-500">
+            <p className="mb-2 font-mono text-xs tracking-wide text-faint">
               {articleRelations.childrenLabel}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
