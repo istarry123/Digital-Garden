@@ -13,7 +13,7 @@ relations:
   related:
     - "07-win7-constraints"
     - "09-ai-self-review"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/522126660df9a90353c20ab18e6da9f2.jpg"
 ---
 
 # 不换框架的界面改版

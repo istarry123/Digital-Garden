@@ -74,7 +74,11 @@ export const blogConfig = {
      * 用于文章 cover 封面图（next/image 远程优化）和 Markdown 正文图片。
      * ⚠️ 新增图床域名时，需同步更新 next.config.ts → images.remotePatterns。
      */
-    remoteDomains: ["picsum.photos", "img.istarry.top"],
+    remoteDomains: [
+      "picsum.photos",
+      "img.istarry.top",
+      "bee-reg-ab.imagency.cn",
+    ],
   },
 
   // ===================================================================

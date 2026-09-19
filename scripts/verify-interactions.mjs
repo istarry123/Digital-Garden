@@ -413,10 +413,26 @@ async function newPage(viewport) {
   const overflowing = [];
   const wideTables = [];
   const scrollable = [];
+  const imageHostErrors = [];
+  const notOk = [];
 
   for (const href of hrefs) {
     if (!href) continue;
-    await page.goto(`${BASE_URL}${href}`, { waitUntil: "domcontentloaded" });
+
+    // 收集页面级错误：未登记的图床域名曾让 next/image 直接抛错、整页白屏
+    const consoleErrors = [];
+    const onConsole = (message) => {
+      if (message.type() === "error") consoleErrors.push(message.text());
+    };
+    page.on("console", onConsole);
+
+    const response = await page.goto(`${BASE_URL}${href}`, {
+      waitUntil: "domcontentloaded",
+    });
+    if (!response || response.status() >= 400) {
+      notOk.push(`${href} → ${response?.status() ?? "无响应"}`);
+    }
+
     const metrics = await page.evaluate(() => {
       const root = document.documentElement;
       const prose = document.querySelector(".prose");
@@ -451,6 +467,12 @@ async function newPage(viewport) {
     if (metrics.scrollableTables > 0) {
       scrollable.push(`${href}: ${metrics.scrollableTables} 张`);
     }
+
+    page.off("console", onConsole);
+    const hostError = consoleErrors.find((text) =>
+      text.includes("is not configured under images"),
+    );
+    if (hostError) imageHostErrors.push(href);
   }
 
   check(
@@ -463,6 +485,16 @@ async function newPage(viewport) {
     wideTables.length === 0,
     wideTables.join("; ") ||
       `无超宽表格块${scrollable.length > 0 ? `；可横滚表格：${scrollable.join("、")}` : ""}`,
+  );
+  check(
+    "图片：未登记图床域名不会让页面报错（曾整页崩）",
+    imageHostErrors.length === 0,
+    imageHostErrors.join("; ") || `${hrefs.length} 篇无图床配置错误`,
+  );
+  check(
+    "页面：全部文章页可正常访问",
+    notOk.length === 0,
+    notOk.join("; ") || `${hrefs.length} 篇均 200`,
   );
 
   await context.close();

@@ -13,7 +13,7 @@ relations:
   related:
     - "03-phase-stop"
     - "09-ai-self-review"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/bd7204c0d5889776a6080b00f8f4cf8a.jpg"
 ---
 
 # 先写规范，再写代码

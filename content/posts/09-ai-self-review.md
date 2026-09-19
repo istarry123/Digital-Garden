@@ -13,7 +13,7 @@ relations:
   related:
     - "05-import-incident"
     - "02-ai-constitution"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/542581c8fe0430c9b32850468e1ae7fa.jpg"
 ---
 
 # 一次全库只读审查：134KB 报告、P0×4 / P1×16，以及审查方自己的 4 处更正

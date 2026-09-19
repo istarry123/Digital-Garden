@@ -13,7 +13,7 @@ relations:
   related:
     - "04-dirty-data"
     - "06-identity-not-number"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/9de22ce18d159708ecb3e7b02ccd4da4.jpg"
 ---
 
 # 5,693,048 台设备：一次差点写进生产库的导入事故

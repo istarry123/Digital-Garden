@@ -13,7 +13,7 @@ relations:
   related:
     - "08-ui-without-framework"
     - "09-ai-self-review"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/92e4ad9a7d2d947e04ce274e2d1869f9.jpg"
 ---
 
 # Win7 如何一路锁死技术选型

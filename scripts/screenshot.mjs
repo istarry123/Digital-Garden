@@ -43,6 +43,11 @@ const ROUTES = [
   ["not-found", "/this-page-does-not-exist"],
 ];
 
+// EXTRA_ROUTE=/posts/01-overview 可临时追加一条路由（用于核对某篇具体文章）
+if (process.env.EXTRA_ROUTE) {
+  ROUTES.push(["extra", process.env.EXTRA_ROUTE]);
+}
+
 const THEMES = ["dark", "light"];
 
 const VIEWPORTS = {

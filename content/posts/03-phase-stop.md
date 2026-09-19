@@ -13,7 +13,7 @@ relations:
   related:
     - "02-ai-constitution"
     - "09-ai-self-review"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/a09d0eedbb8c2d5e396b8252261b910f.jpg"
 ---
 
 # 为什么每个阶段都要停下来验收：「不猜测」与 Phase-STOP

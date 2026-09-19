@@ -13,7 +13,7 @@ relations:
   related:
     - "04-dirty-data"
     - "05-import-incident"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/8e7ff4b6e049b35e2fe956090e74d709.jpg"
 ---
 
 # 编号不是身份：我删掉了亲手建的那个唯一索引

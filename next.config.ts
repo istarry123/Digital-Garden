@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.istarry.top",
       },
+      {
+        protocol: "https",
+        hostname: "bee-reg-ab.imagency.cn",
+      },
     ],
   },
 };

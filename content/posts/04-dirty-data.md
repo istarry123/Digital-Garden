@@ -13,7 +13,7 @@ relations:
   related:
     - "05-import-incident"
     - "06-identity-not-number"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/04c39660cb168a54e485c7bbed06f3f5.jpg"
 ---
 
 # 十年手工台账的脏数据全景：2147 台设备、174 处合并单元格，和一张必须逐列读懂的 Excel

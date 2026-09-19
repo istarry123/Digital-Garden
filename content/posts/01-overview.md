@@ -13,7 +13,7 @@ relations:
   related:
     - "05-import-incident"
     - "02-ai-constitution"
-cover: "https://img.istarry.top/images/bg1.jpg"
+cover: "https://bee-reg-ab.imagency.cn/mr/6319/26/009a07fe0726cb405b4821275398e066.jpg"
 ---
 
 # 一台只跑 Win7 的机器、2148 台设备、一份手工台账

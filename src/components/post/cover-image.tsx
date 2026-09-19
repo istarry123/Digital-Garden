@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { isOptimizableSrc, warnUnconfiguredHost } from "@/lib/image-host";
 
 interface CoverImageProps {
   src: string;
@@ -12,11 +13,13 @@ interface CoverImageProps {
 }
 
 /**
- * 封面图 —— 远程图床失效时降级为中性占位块，而不是显示破图。
+ * 封面图。两层降级，任何一层都不允许把整页弄崩：
  *
- * 本站部分封面指向的 CDN 路径已经失效（服务端无法预知远程资源是否可用），
- * 所以把失败处理放在客户端：加载失败就把图片换成同尺寸的 raised 色块，
- * 版面不会被破图打断。
+ * 1. 域名未登记进 next.config.ts 的 images.remotePatterns 时，next/image 的
+ *    defaultLoader 会直接抛错（Runtime Error，整页白屏）。这种情况改用
+ *    `unoptimized` —— 它在调用 loader 之前就返回，因此跳过域名校验：
+ *    图片不经过优化，但能正常显示，内容侧换图床不再是故障。
+ * 2. 加载失败（404 / 500 / CDN 挂了）时换成同尺寸中性色块，避免出现破图。
  */
 export function CoverImage({
   src,
@@ -31,6 +34,9 @@ export function CoverImage({
     return <div aria-hidden="true" className="absolute inset-0 bg-raised" />;
   }
 
+  const optimizable = isOptimizableSrc(src);
+  if (!optimizable) warnUnconfiguredHost(src);
+
   return (
     <Image
       src={src}
@@ -38,6 +44,7 @@ export function CoverImage({
       fill
       sizes={sizes}
       priority={priority}
+      unoptimized={!optimizable}
       className={className}
       onError={() => setFailed(true)}
     />
