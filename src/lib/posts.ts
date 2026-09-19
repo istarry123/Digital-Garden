@@ -31,7 +31,10 @@ interface PostFrontmatter {
 
 function parseCategory(raw: string | undefined): string[] {
   if (!raw) return [];
-  return raw.split("/").map((s) => s.trim()).filter(Boolean);
+  return raw
+    .split("/")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 function parseRelations(raw: PostFrontmatter["relations"]): PostRelations {
@@ -78,6 +81,13 @@ async function markdownToHtml(markdown: string): Promise<string> {
       },
       defaultLang: "plaintext",
       grid: true,
+      /**
+       * 不处理行内代码。
+       * 默认行为会把行内 `code` 也包成 <span data-rehype-pretty-code-figure>，
+       * 于是被代码块样式命中（display:block），整段正文会被切成一格一行的碎片。
+       * 行内代码应当由 Typography 的行内样式负责，而不是 shiki。
+       */
+      bypassInlineCode: true,
     })
     .use(rehypeImageOptimizer)
     .use(rehypeStringify)

@@ -399,6 +399,117 @@ async function newPage(viewport) {
   await context.close();
 }
 
+/* 10. 版面溢出守护：文章页不得横向溢出，Markdown 表格不得撑破正文列 ------ */
+{
+  const { context, page } = await newPage({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/posts`, { waitUntil: "networkidle" });
+
+  const hrefs = await page
+    .locator('main a[href^="/posts/"]')
+    .evaluateAll((elements) => [
+      ...new Set(elements.map((element) => element.getAttribute("href"))),
+    ]);
+
+  const overflowing = [];
+  const wideTables = [];
+  const scrollable = [];
+
+  for (const href of hrefs) {
+    if (!href) continue;
+    await page.goto(`${BASE_URL}${href}`, { waitUntil: "domcontentloaded" });
+    const metrics = await page.evaluate(() => {
+      const root = document.documentElement;
+      const prose = document.querySelector(".prose");
+      const proseWidth = prose?.clientWidth ?? 0;
+      const tables = [...document.querySelectorAll(".prose table")];
+      return {
+        pageOverflow: root.scrollWidth - root.clientWidth,
+        proseOverflow: prose ? prose.scrollWidth - proseWidth : 0,
+        tableCount: tables.length,
+        // 表格"块"本身不得超出正文列；内容更宽时它是可横向滚动的，不算溢出
+        tableBlockOverflow: tables.reduce(
+          (max, table) =>
+            Math.max(max, table.getBoundingClientRect().width - proseWidth),
+          0,
+        ),
+        scrollableTables: tables.filter(
+          (table) => table.scrollWidth > table.clientWidth + 1,
+        ).length,
+      };
+    });
+
+    if (metrics.pageOverflow > 0 || metrics.proseOverflow > 0) {
+      overflowing.push(
+        `${href} (页面+${metrics.pageOverflow}, 正文+${metrics.proseOverflow})`,
+      );
+    }
+    if (metrics.tableBlockOverflow > 1) {
+      wideTables.push(
+        `${href} (${metrics.tableCount} 张表，块超出 ${Math.round(metrics.tableBlockOverflow)}px)`,
+      );
+    }
+    if (metrics.scrollableTables > 0) {
+      scrollable.push(`${href}: ${metrics.scrollableTables} 张`);
+    }
+  }
+
+  check(
+    "版面：文章页无横向溢出",
+    overflowing.length === 0,
+    overflowing.join("; ") || `${hrefs.length} 篇全部正常`,
+  );
+  check(
+    "版面：表格块不超出正文列（内容更宽时改为横向滚动）",
+    wideTables.length === 0,
+    wideTables.join("; ") ||
+      `无超宽表格块${scrollable.length > 0 ? `；可横滚表格：${scrollable.join("、")}` : ""}`,
+  );
+
+  await context.close();
+}
+
+/* 11. 行内代码排版：不得独占一行（修复前每个行内代码都自占一行） ---------- */
+{
+  const { context, page } = await newPage({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/posts/09-ai-self-review`, {
+    waitUntil: "networkidle",
+  });
+
+  const inline = await page.evaluate(() => {
+    const codes = [
+      ...document.querySelectorAll(
+        ".prose p code, .prose li code, .prose td code",
+      ),
+    ];
+    const blocky = codes.filter(
+      (element) => getComputedStyle(element).display !== "inline",
+    );
+    return {
+      total: codes.length,
+      blocky: blocky.length,
+      sample: blocky[0]?.textContent?.slice(0, 24) ?? "",
+    };
+  });
+  check(
+    "排版：行内代码不独占一行",
+    inline.blocky === 0,
+    `${inline.total} 处行内代码，块级 ${inline.blocky} 处 ${inline.sample}`,
+  );
+
+  const paragraphBox = await page
+    .locator(".prose p")
+    .filter({ hasText: "为 0 改动" })
+    .first()
+    .boundingBox();
+  check(
+    "排版：含行内代码的段落高度正常（不是梯子状）",
+    paragraphBox !== null && paragraphBox.height < 140,
+    `段落高度 ${Math.round(paragraphBox?.height ?? 0)}px`,
+  );
+
+  await context.close();
+}
+
 await browser.close();
 console.log(
   failures === 0 ? "\nall checks passed" : `\n${failures} check(s) failed`,

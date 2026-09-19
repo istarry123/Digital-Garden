@@ -208,6 +208,31 @@
   scroll-margin-top: 6rem;
 }
 
+/* ===================================================================
+   长 token 与宽表格
+   -------------------------------------------------------------------
+   技术文章里满是文件路径、SQL 标识符、命令行片段，它们没有断行机会，
+   会把 664px 的正文列撑出横向溢出（实测 09 篇溢出 13px、07 篇 4px）。
+   两条规则分工：
+     - 正文允许长单词在必要时断行（不影响正常中英文排版）；
+     - 表格不再"撑着正文列"，而是按需横向滚动。
+   =================================================================== */
+.prose {
+  overflow-wrap: break-word;
+}
+
+.prose table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* 单元格里是长标识符；表格被压到最小宽度时允许在必要处断行 */
+.prose :is(td, th) {
+  overflow-wrap: break-word;
+}
+
 /* 中文正文按中文阅读节奏排版：17px / 1.8（prose-sm 卡片不受影响） */
 .prose:not(.prose-sm) {
   font-size: 1.0625rem;
@@ -227,8 +252,11 @@ pre > code[data-theme="dark"] {
   display: none;
 }
 
-/* ---- Code block: rehype-pretty-code figure ---- */
-[data-rehype-pretty-code-figure] {
+/* ---- Code block: rehype-pretty-code figure ----
+   注意：所有代码块样式都用 `figure[...]` 限定。
+   rehype-pretty-code 会把行内代码也包成 <span data-rehype-pretty-code-figure>，
+   若只用属性选择器，行内代码会被 display:block 命中而独占一行。 */
+figure[data-rehype-pretty-code-figure] {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   border-radius: var(--ds-radius-card);
@@ -237,13 +265,13 @@ pre > code[data-theme="dark"] {
   background: var(--ds-code-bg);
 }
 
-.dark [data-rehype-pretty-code-figure] {
+.dark figure[data-rehype-pretty-code-figure] {
   box-shadow:
     0 4px 24px rgb(0 0 0 / 0.3),
     inset 0 1px 0 rgb(255 255 255 / 0.03);
 }
 
-[data-rehype-pretty-code-figure] pre {
+figure[data-rehype-pretty-code-figure] pre {
   margin: 0;
   padding: 1.25rem 1.5rem;
   overflow-x: auto;
@@ -251,15 +279,32 @@ pre > code[data-theme="dark"] {
   line-height: 1.7;
 }
 
-[data-rehype-pretty-code-figure] code {
+figure[data-rehype-pretty-code-figure] code {
   display: block;
   counter-reset: line;
   font-variant-ligatures: none;
 }
 
-/* ---- Inline code (inside code blocks) ---- */
-[data-rehype-pretty-code-figure] code > [data-line] {
+/* ---- Code block: 每一行 ---- */
+figure[data-rehype-pretty-code-figure] code > [data-line] {
   padding: 0 0.25rem;
+}
+
+/* ---- 行内代码 ---- */
+.prose :not(pre) > code {
+  background: var(--ds-raised);
+  border: 1px solid var(--ds-hairline);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.875em;
+  font-weight: 500;
+  overflow-wrap: break-word;
+}
+
+/* Tailwind Typography 默认给行内代码加反引号，与我们的 chip 样式重复 */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none;
 }
 
 /* ---- Code block: line numbers ---- */
