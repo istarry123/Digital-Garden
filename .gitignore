@@ -28,8 +28,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
-.env*.local
+# env files — 真实值只放本地；.env.example 是模板，必须提交
+.env
+.env.*
+!.env.example
 
 # vercel
 .vercel
