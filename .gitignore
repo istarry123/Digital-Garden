@@ -38,6 +38,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local JEV check/rank debug harness (root-level scratch files)
+.jev-*
+
 # claude code
 .claude/
 
