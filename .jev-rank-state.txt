@@ -1,0 +1,39 @@
+EVIDENCE: real-world facts and existing schema constraints of this equipment management system, gathered from the repository.
+
+[Scale of real data] 2148 devices (1815 IN_STOCK / 333 BORROWED), 333 borrow records, 2481 transfer records. The system started from a hand-maintained Excel ledger.
+
+[The 670-device incident] A single equipment block named "平车" contained 670 devices whose equipment_no values were heavily duplicated within the block. The V002 partial unique index (on name+model+equipment_no) classified this as a BLOCK violation, so the ENTIRE 670-device block could not be imported. These 670 rows were not dirty data: business reality is that multiple physical machines legitimately share one equipment number (duplicate asset label printing, early unlabeled periods, batch registration instead of per-unit numbering). The machines physically exist.
+
+[Schema history]
+  V001: plain index idx_equipment_no on equipment(equipment_no). Still present today.
+  V002 (decision 16, 2026-09-08): CREATE UNIQUE INDEX ... ON equipment(name, model, equipment_no) WHERE equipment_no IS NOT NULL. Never a global UNIQUE on equipment_no alone.
+  V003 (decision 18, 2026-09-09): DROP INDEX idx_equipment_name_model_no. Added column equipment_seq INTEGER NOT NULL DEFAULT 0.
+  Migration goal verbatim: "equipment_no is no longer part of any uniqueness constraint; the same (name,model,equipment_no) is allowed to exist for multiple real machines."
+
+[Identity model, verbatim from internal/service/identity.go:12-16]
+  - equipment.id is the unique identity; equipment_no is merely a LABEL (may repeat / be empty / contain Chinese characters and Chinese punctuation).
+  - equipment_seq is the WITHIN-GROUP DISPLAY ORDINAL, explicitly documented as NOT an identity. NOT NULL default 0.
+  - Grouping key: when numbered = equipment_no + name + model; when unnumbered = model (else name, else a generic unnumbered bucket).
+
+[How equipment_seq is produced and maintained] It is a DERIVED value computed by a full recomputation pass (SeqGroupKey + a recompute routine that issues UPDATE equipment_seq). Measured on real data: running the recompute twice in succession wrote 0 rows (already consistent); all 1643 groups (58 of them multi-device groups) had 0 violations, and the (id, seq, display_no) fingerprint was identical across runs. It is therefore a derived, recomputable display value that is reassigned as group membership changes.
+
+[Display numbering] display_no is computed by the BACKEND only (front end is forbidden to concatenate it). Rule: numbered and unique in group -> "6041"; numbered and multiple in group -> "6041（1）", "6041（2）"; unnumbered -> always carries a sequence, e.g. "某型号（1）". The unnumbered case deliberately always appends a sequence so users can visually tell an unnumbered device apart from a numbered one.
+
+[Immutability and history rules]
+  - equipment_no is NOT editable after creation (the edit page shows it as read-only).
+  - Transfer records (transactions) are FORBIDDEN to be deleted. Devices are forbidden to be physically deleted (only transitioned to scrapped status).
+  - Any state change = update the device current status PLUS insert one transfer record, both in a SINGLE transaction.
+  - Because names change over time (team renames, borrower renames), transfer records redundantly store a NAME SNAPSHOT at the time of the transfer (decision 14): from_team_name / to_team_name / borrower_name. So historical rows intentionally denormalize the names.
+  - There is also a real historical-data problem: the source Excel has NO return column, and borrow events are interleaved with ledger rows. Only 2 cells in the entire file carried a parenthetical return note.
+
+[Borrow management facts]
+  - Borrow management is an INDEPENDENT borrow record: one device, one borrow record.
+  - The formal state machine has exactly 8 actions: 入库, 出库给班组, 班组转交, 外借, 归还, 送修, 维修完成, 报废.
+  - Some devices have NO equipment_no at all (unnumbered devices are a real, accepted category), and numbering of some devices was historically reused across different device names/models.
+
+[Decision 18 hard prohibitions, verbatim]
+  1. PROHIBITED: using equipment_no as a unique key.
+  2. PROHIBITED: skipping an entire group because of duplicate numbers.
+  3. PROHIBITED: rejecting a device because its number contains Chinese characters.
+
+[Stated design principle] Business identifiers (numbers, employee ids, order ids) are labels for humans; the technical primary key is the identity for the system. The two may coincide but must never be assumed to coincide.

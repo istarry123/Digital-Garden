@@ -1,0 +1,28 @@
+EVIDENCE: schema and decision history of the "equipment" table equipment_no column, from the project repository.
+
+[V001] Plain index idx_equipment_no on equipment(equipment_no) was created.
+
+[V002_equipment_unique_no.sql, decision 16, dated 2026-09-08] A PARTIAL UNIQUE index was created:
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_equipment_name_model_no
+      ON equipment(name, model, equipment_no)
+      WHERE equipment_no IS NOT NULL;
+Note this was never a global UNIQUE on equipment_no alone: its granularity was "unique only within the same name+model", and rows with NULL equipment_no were excluded.
+
+[Incident, the day after V002 went live] One equipment block named "平车" contained 670 devices whose equipment_no values were heavily duplicated within the block. The BLOCK rule rejected the entire block, so all 670 real devices could not be imported. The 670 rows were not dirty data; business reality is that multiple physical machines legitimately share one equipment number (duplicate asset label printing, early unlabeled periods, batch registration instead of per-unit numbering).
+
+[V003_equipment_seq.sql, decision 18, dated 2026-09-09] act 1: added column equipment_seq. act 2:
+  DROP INDEX IF EXISTS idx_equipment_name_model_no;
+Goal stated verbatim in the migration: "equipment_no is no longer part of any uniqueness constraint; the same (name,model,equipment_no) is allowed to exist for multiple real machines." The plain index idx_equipment_no from V001 was deliberately KEPT, because constraint and index serve different purposes: the index serves query performance, the constraint served correctness.
+
+[identity.go:12-16, decision 18, written verbatim into code comments]
+  - equipment.id is the unique identity; equipment_no is merely a LABEL (may repeat / be empty / contain Chinese characters and Chinese punctuation).
+  - equipment_seq is the within-group ordinal, NOT an identity. Grouping key: when numbered, equipment_no + name + model; when unnumbered, model (else name, else a generic "unnumbered devices" bucket).
+
+[Decision 18 states three hard prohibitions, verbatim]
+  1. PROHIBITED: using equipment_no as a unique key.
+  2. PROHIBITED: skipping an entire group because of duplicate numbers.
+  3. PROHIBITED: rejecting a device because its number contains Chinese characters.
+
+[AGENTS.md:66 record of supersession, verbatim] "decision 16 ... from 2026-09-09 partially superseded by decision 18: the same (name,model,equipment_no) is no longer required to be unique, duplicate numbers are expanded and imported as multiple real machines (V002 will be removed in V003); this entry is retained as a record of the old decision."
+
+[Design principle stated in the decision record] Business identifiers (numbers, employee ids, order ids) are labels for humans; the technical primary key is the identity for the system. The two may coincide but must never be assumed to coincide.
