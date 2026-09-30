@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { cache } from "react";
 import matter from "gray-matter";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
@@ -96,7 +97,17 @@ async function markdownToHtml(markdown: string): Promise<string> {
   return String(result);
 }
 
-export async function getAllPosts(): Promise<Post[]> {
+/**
+ * 全站文章元信息。
+ *
+ * 用 React cache 包裹：一次渲染里 Footer、getRelatedPosts、页面组件都会各自取一次，
+ * 不缓存的话 content/posts 的 20 个文件会被重复读取 + gray-matter 解析多次。
+ * 与 lib/tags.ts → getAllTagGroups 采用同一套去重机制。
+ *
+ * 注意：这里的 cache 只做「同一次渲染 / 构建过程中的去重」，
+ * 不是跨请求的持久缓存，也不改变返回值的数量、顺序与字段。
+ */
+export const getAllPosts = cache(async function getAllPosts(): Promise<Post[]> {
   if (!fs.existsSync(postsDirectory)) {
     return [];
   }
@@ -128,42 +139,54 @@ export async function getAllPosts(): Promise<Post[]> {
     .sort((a, b) => (a.date > b.date ? -1 : 1));
 
   return posts;
-}
+});
 
-export async function getPostBySlug(
-  slug: string,
-): Promise<(Post & { content: string; toc: TocItem[] }) | null> {
-  const fullPath = path.join(postsDirectory, `${slug}.md`);
+/**
+ * 同一 slug 的文章详情。
+ *
+ * 用 React cache 包裹：一次渲染里 generateMetadata 与页面组件都会取同一篇文章，
+ * 不缓存的话 Markdown 解析与 Shiki 高亮（本站最贵的两步）会完整跑两遍。
+ * 与 lib/tags.ts → getAllTagGroups 采用同一套去重机制。
+ *
+ * 注意：这里的 cache 只做「同一次渲染 / 构建过程中的去重」，
+ * 不是跨请求的持久缓存，也不改变返回值。
+ */
+export const getPostBySlug = cache(
+  async function getPostBySlug(
+    slug: string,
+  ): Promise<(Post & { content: string; toc: TocItem[] }) | null> {
+    const fullPath = path.join(postsDirectory, `${slug}.md`);
 
-  if (!fs.existsSync(fullPath)) {
-    return null;
-  }
+    if (!fs.existsSync(fullPath)) {
+      return null;
+    }
 
-  const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
-  const frontmatter = data as PostFrontmatter;
+    const fileContents = fs.readFileSync(fullPath, "utf8");
+    const { data, content } = matter(fileContents);
+    const frontmatter = data as PostFrontmatter;
 
-  if (!frontmatter.title || !frontmatter.date) {
-    return null;
-  }
+    if (!frontmatter.title || !frontmatter.date) {
+      return null;
+    }
 
-  const html = await markdownToHtml(content);
-  const toc = extractToc(content);
+    const html = await markdownToHtml(content);
+    const toc = extractToc(content);
 
-  return {
-    slug,
-    title: frontmatter.title,
-    date: frontmatter.date,
-    summary: frontmatter.description,
-    tags: frontmatter.tags ?? [],
-    readingTime: calculateReadingTime(fileContents),
-    cover: frontmatter.cover,
-    category: parseCategory(frontmatter.category),
-    relations: parseRelations(frontmatter.relations),
-    content: html,
-    toc,
-  };
-}
+    return {
+      slug,
+      title: frontmatter.title,
+      date: frontmatter.date,
+      summary: frontmatter.description,
+      tags: frontmatter.tags ?? [],
+      readingTime: calculateReadingTime(fileContents),
+      cover: frontmatter.cover,
+      category: parseCategory(frontmatter.category),
+      relations: parseRelations(frontmatter.relations),
+      content: html,
+      toc,
+    };
+  },
+);
 
 export async function getRelatedPosts(
   currentSlug: string,

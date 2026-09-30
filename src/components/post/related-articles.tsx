@@ -16,7 +16,11 @@ export function RelatedArticles({ posts }: { posts: Post[] }) {
       {/* 正文列只有 44rem，两栏才放得下日期/时长/标签；三栏会把卡片压到 215px 造成折行 */}
       <div className="grid gap-4 sm:grid-cols-2">
         {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
+          // prefetch={false}：相关文章位于正文底部，默认预取会在滚动到这里时
+          // 为每篇各下载一份完整正文 RSC（实测单页 31–63 KB brotli）。
+          // 改为用户真正点击时再取；导航行为不变。
+          // 首页的 PostCard 调用点不传该参数，保持默认行为。
+          <PostCard key={post.slug} post={post} prefetch={false} />
         ))}
       </div>
     </section>

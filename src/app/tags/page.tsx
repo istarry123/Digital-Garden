@@ -52,8 +52,15 @@ export default async function TagsPage() {
         <ul className="flex flex-wrap gap-2">
           {groups.map((group) => (
             <li key={group.tag}>
+              {/*
+                prefetch={false}：标签云里每个 chip 都是一个完整归档页；默认预取会为
+                全部标签（本站 53 个）各下载一份归档页 RSC。标签云的用途是"先看有哪些
+                标签"，不是立刻进入某一个；改为用户点击时再取，避免为未访问的归档
+                提前支付传输。导航行为不变。
+              */}
               <Link
                 href={group.href}
+                prefetch={false}
                 className={`inline-flex items-center gap-2 rounded-control border border-hairline bg-surface transition-colors hover:border-hairline-strong ${chipSize(group.count)}`}
               >
                 <span

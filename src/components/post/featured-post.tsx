@@ -33,8 +33,11 @@ export function FeaturedPost({ post }: { post: Post }) {
         </p>
 
         <h2 className="mt-4 text-2xl font-semibold leading-snug tracking-tight text-ink">
+          {/* prefetch={false}：与 /posts 列表行一致 —— 列表页不应为未读文章
+              提前下载整篇正文 RSC；用户点击时再取。导航行为不变。 */}
           <Link
             href={href}
+            prefetch={false}
             className="transition-colors group-hover:text-accent-text"
           >
             {post.title}

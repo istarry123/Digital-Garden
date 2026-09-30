@@ -32,8 +32,18 @@ export function PostRow({ post }: { post: Post }) {
         <div className="min-w-0">
           <div className="flex items-baseline justify-between gap-4">
             <h3 className="text-base font-medium leading-snug text-ink transition-colors group-hover:text-accent-text sm:text-lg">
-              {/* after: 伪元素撑满整行，使整行可点 */}
-              <Link href={href} className="after:absolute after:inset-0">
+              {/*
+                after: 伪元素撑满整行，使整行可点。
+                prefetch={false}：文章列表里每行都是一篇独立文章，默认预取会为
+                viewport 内的行整篇下载文章 RSC（含完整正文 HTML）。列表页的用途是
+                浏览，不是立刻进入某一篇；改为在用户真正点击时再取，避免为未读文章
+                提前支付正文传输。导航行为不变。
+              */}
+              <Link
+                href={href}
+                prefetch={false}
+                className="after:absolute after:inset-0"
+              >
                 {post.title}
               </Link>
             </h3>

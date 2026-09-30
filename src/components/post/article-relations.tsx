@@ -22,8 +22,12 @@ function lookupMany(slugs: string[], posts: Post[]): Post[] {
 
 function RelationLink({ post }: { post: Post }) {
   return (
+    // prefetch={false}：知识关系位于正文底部，默认预取会在滚动到这里时
+    // 为每篇各下载一份完整正文 RSC（实测单页 12–31 KB brotli）。
+    // 改为用户真正点击时再取；导航行为不变。
     <Link
       href={`/posts/${post.slug}`}
+      prefetch={false}
       className="group block rounded-control border border-hairline bg-surface p-4 shadow-card transition-colors hover:border-hairline-strong"
     >
       <p className="text-sm font-medium text-ink group-hover:text-accent-text">
