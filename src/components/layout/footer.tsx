@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { blogConfig } from "@/config/blog.config";
 import { Container } from "@/components/layout/container";
-import { getAllPosts } from "@/lib/posts";
-import { getAllExploreEntries } from "@/lib/explore";
+import { getLatestContentDate } from "@/lib/latest-content";
 import { formatDate } from "@/lib/format";
 
 const { site, footer, navigation, socialLinks } = blogConfig;
@@ -22,14 +21,8 @@ export async function Footer() {
       ? `${copyrightSince}–${currentYear}`
       : `${copyrightSince}`;
 
-  const [posts, explore] = await Promise.all([
-    getAllPosts(),
-    getAllExploreEntries(),
-  ]);
-  const dates = [posts[0]?.date, explore[0]?.date].filter(
-    (date): date is string => Boolean(date),
-  );
-  const latest = dates.sort()[dates.length - 1];
+  // 与首页索引行的「最近更新」共用同一处计算，两处口径不会分叉
+  const latest = await getLatestContentDate();
 
   const navItems = [
     navigation.articles,

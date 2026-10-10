@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { blogConfig } from "@/config/blog.config";
 import { Container } from "@/components/layout/container";
@@ -6,7 +7,11 @@ const { hero, social } = blogConfig;
 
 export interface HeroStat {
   label: string;
-  value: string;
+  /**
+   * 统计值。多数是纯文本，但「最近更新」需要一个 Client Component
+   * 在浏览器里换成相对时间（见 home/relative-date.tsx），所以是 ReactNode。
+   */
+  value: ReactNode;
   href: string;
 }
 

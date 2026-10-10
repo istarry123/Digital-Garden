@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Hero, type HeroStat } from "@/components/home/hero";
 import { LatestArticles } from "@/components/home/latest-articles";
 import { LatestExplore } from "@/components/home/latest-explore";
+import { RelativeDate } from "@/components/home/relative-date";
 import { getAllPosts } from "@/lib/posts";
 import { getAllExploreEntries } from "@/lib/explore";
 import { getTimeline } from "@/lib/timeline";
+import { getLatestContentDate } from "@/lib/latest-content";
+import { formatDate } from "@/lib/format";
 import { blogConfig } from "@/config/blog.config";
 
 const { site, homepage } = blogConfig;
@@ -23,30 +26,14 @@ export const metadata: Metadata = {
   },
 };
 
-/** 把日期转成"几天前"，让首屏索引行体现内容的新鲜度 */
-function formatRelativeDays(dateStr: string): string {
-  const then = new Date(dateStr).getTime();
-  if (Number.isNaN(then)) return "—";
-
-  const days = Math.floor((Date.now() - then) / 86_400_000);
-  if (days <= 0) return "今天";
-  if (days === 1) return "昨天";
-  if (days < 30) return `${days} 天前`;
-  if (days < 365) return `${Math.floor(days / 30)} 个月前`;
-  return `${Math.floor(days / 365)} 年前`;
-}
-
+/** 首页：首屏索引行 + 可选的 Latest 板块，数据全部来自 content/ */
 export default async function HomePage() {
-  const [posts, explore, timeline] = await Promise.all([
+  const [posts, explore, timeline, latestDate] = await Promise.all([
     getAllPosts(),
     getAllExploreEntries(),
     getTimeline(),
+    getLatestContentDate(),
   ]);
-
-  const dates = [posts[0]?.date, explore[0]?.date].filter(
-    (date): date is string => Boolean(date),
-  );
-  const latestDate = dates.sort()[dates.length - 1];
 
   // 索引行的数字全部来自真实内容，不是硬编码的营销数字
   const stats: HeroStat[] = [
@@ -59,7 +46,16 @@ export default async function HomePage() {
     },
     {
       label: "最近更新",
-      value: latestDate ? formatRelativeDays(latestDate) : "—",
+      /**
+       * 相对时间交给客户端算（见 RelativeDate）：
+       * 这里预渲染的是 fallback 绝对日期，因此首页仍是纯静态快照，
+       * 只有这一格在浏览器里换成"13 天前"。
+       */
+      value: latestDate ? (
+        <RelativeDate date={latestDate} fallback={formatDate(latestDate)} />
+      ) : (
+        "—"
+      ),
       href: "/explore",
     },
   ];
