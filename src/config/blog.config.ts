@@ -259,8 +259,11 @@ export const blogConfig = {
   },
 
   // ===================================================================
-  // 站点分析 — 支持同时启用多个统计服务
-  // 通过环境变量配置各服务的 ID，将 enabled 设为 true 即可激活
+  // 站点分析 — 唯一配置入口（single source of truth）
+  // 所有统计 Provider 的启用开关与参数只在此处定义，并可通过环境变量覆盖。
+  // 组件（src/components/analytics/Analytics.tsx、src/app/layout.tsx）
+  // 只读取本配置，不得自带 ID 或启用状态的 fallback。
+  // 全局 enabled 为 false 时，以下所有 Provider 均不加载。
   // ===================================================================
   analytics: {
     /** 全局开关 — 设为 false 则禁用所有统计脚本 */
@@ -279,13 +282,15 @@ export const blogConfig = {
         measurementId:
           process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-TNWHN0DLLC",
       },
-      /** 51la 网站统计 */
-      la51: {
+      /**
+       * Vercel Web Analytics — 已替代停用的 51la。
+       * 官方组件（@vercel/analytics/next）不需要 ID，因此这里没有 ID 字段；
+       * 是否加载由本开关 + 全局 analytics.enabled 共同决定。
+       * 注意：需在 Vercel Dashboard → 项目 → Analytics 中启用 Web Analytics，
+       * 否则客户端会请求 /_vercel/insights/script.js 失败。
+       */
+      vercel: {
         enabled: true,
-        /** 51la 网站 ID */
-        id: process.env.NEXT_PUBLIC_51LA_ID ?? "3QY3fcmNgSjP54ai",
-        /** 51la ck 密钥（部分场景需要） */
-        ck: process.env.NEXT_PUBLIC_51LA_CK ?? "3QY3fcmNgSjP54ai",
       },
       /** 百度统计 */
       baidu: {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -80,7 +81,14 @@ export default function RootLayout({
           <div className="flex flex-1 flex-col">{children}</div>
           <Footer />
         </ThemeProvider>
+        {/* 第三方统计：GA4 + 百度统计，配置见 blogConfig.analytics */}
         <Analytics />
+        {/*
+          Vercel Web Analytics — 官方组件，无需 ID；替代已停用的 51la。
+          同时受全局 analytics.enabled 与 providers.vercel.enabled 控制。
+        */}
+        {blogConfig.analytics.enabled &&
+          blogConfig.analytics.providers.vercel.enabled && <VercelAnalytics />}
       </body>
     </html>
   );

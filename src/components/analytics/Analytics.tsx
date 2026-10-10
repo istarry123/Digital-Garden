@@ -3,12 +3,6 @@
 import Script from "next/script";
 import { blogConfig } from "@/config/blog.config";
 
-declare global {
-  interface Window {
-    LA?: { init: (opts: { id: string; ck: string }) => void };
-  }
-}
-
 const { analytics } = blogConfig;
 
 export function Analytics() {
@@ -50,19 +44,6 @@ export function Analytics() {
             }}
           />
         </>
-      )}
-
-      {/* 51la */}
-      {providers.la51.enabled && providers.la51.id && (
-        <Script
-          id="LA_COLLECT"
-          charSet="UTF-8"
-          strategy="beforeInteractive"
-          src="https://sdk.51.la/js-sdk-pro.min.js"
-          onLoad={() => {
-            window.LA?.init({ id: providers.la51.id, ck: providers.la51.ck });
-          }}
-        />
       )}
 
       {/* 百度统计 */}
