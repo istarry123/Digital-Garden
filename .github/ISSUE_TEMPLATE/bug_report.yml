@@ -1,0 +1,127 @@
+name: 🐛 Bug 报告
+description: 报告站点上可复现的问题（页面报错、样式错位、构建失败、链接失效等）
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你花时间反馈问题。请尽量把下面的信息填完整，信息越具体，越容易被复现和修复。
+
+        > ⚠️ **安全漏洞请勿在此提交**，请改走 [SECURITY.md](https://github.com/istarry123/Digital-Garden/blob/main/SECURITY.md) 中的私密报告渠道。
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已搜索过现有 Issue，确认这不是重复问题
+          required: true
+        - label: 我确认这不是安全漏洞（安全漏洞走 SECURITY.md 的私密渠道）
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 用一两句话清楚说明你遇到的问题
+      placeholder: 例如：在 /posts 列表页切换深浅主题后，文章卡片的封面图会短暂闪烁。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请写出可被他人重现的最短步骤
+      value: |
+        1. 打开 '...'
+        2. 点击 '...'
+        3. 滚动到 '...'
+        4. 看到问题
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 你认为正常情况下应该发生什么
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际发生了什么（包括报错、错位、空白、404 等）
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 出问题的页面 URL
+      description: 若与某个具体页面有关，请贴出完整地址
+      placeholder: https://istarry.top/posts/example
+    validations:
+      required: false
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 问题出现在哪里？
+      options:
+        - 线上生产站点（istarry.top）
+        - 本地 dev server（npm run dev）
+        - 生产构建 / 本地生产模式（npm run build、npm start）
+        - 不确定
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: 浏览器与设备
+      description: 浏览器名称与版本、操作系统、桌面端还是移动端
+      placeholder: Chrome 131 / Windows 11 / 桌面端（1920×1080）
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js 与包管理器版本
+      description: 仅本地环境的问题需要填写
+      placeholder: Node v20.11.0 / npm 10.2.4
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 控制台报错 / 终端日志
+      description: |
+        粘贴浏览器 Console 报错或终端输出。
+        ⚠️ **请先脱敏**：移除密钥、令牌、Cookie、真实 IP、个人邮箱等敏感信息。
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图或录屏
+      description: |
+        可直接把图片拖拽到此处。请一并说明截图时的主题（浅色/深色）与视口宽度。
+        ⚠️ **请先脱敏**，不要包含个人信息或凭据。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: sanitized
+    attributes:
+      label: 脱敏确认
+      options:
+        - label: 我确认以上内容已移除密钥、令牌、Cookie、个人隐私数据等敏感信息
+          required: true
