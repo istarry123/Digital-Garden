@@ -75,6 +75,19 @@ export default function RootLayout({
       <body
         className={`${plexSans.variable} ${plexMono.variable} flex min-h-screen flex-col bg-canvas font-sans text-ink antialiased transition-colors`}
       >
+        {/*
+          GA4 的 gtag.js 现在用 lazyOnload 在 window load 之后才下载。
+          提前 preconnect（只做 DNS/TCP/TLS，不下载字节）让首次统计请求到达时连接已就绪，
+          补偿移除 gtag preload 后损失的首屏建连时间；React 19 会把它提升到 <head>。
+        */}
+        {blogConfig.analytics.enabled &&
+          blogConfig.analytics.providers.google.enabled &&
+          blogConfig.analytics.providers.google.measurementId && (
+            <link
+              rel="preconnect"
+              href="https://www.googletagmanager.com"
+            />
+          )}
         <ThemeProvider>
           <Navbar />
           {/* 撑满剩余高度，使 Footer 始终贴在页面最底部 */}
